@@ -1,0 +1,20 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: MAGASIN SAYDA BOUTIQUE
+SIRET: 02404014900015
+TVA: FR86024040149
+Client: FABRICE GILLOTTE
+SIRET client: 01575114200017
+Numero facture: FAC-202601-0047
+Date emission: 2026-01-31
+Date echeance: 2026-03-02
+IBAN: FR7658170706512132228563662
+BIC: UUUTJFAQ
+Montant HT: 9890.79 EUR
+Montant TVA: 1978.16 EUR
+Montant TTC: 11868.95 EUR
+
+Lignes:
+- Envisioneer Proactive Metrics | qty=4 | pu=1106.08 | total=4424.32
+- Envisioneer Robust Content | qty=4 | pu=717.58 | total=2870.32
+- Deliver Visionary Users | qty=5 | pu=519.23 | total=2596.15

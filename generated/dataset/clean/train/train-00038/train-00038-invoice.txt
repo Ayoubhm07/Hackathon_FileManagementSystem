@@ -1,0 +1,21 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: SNC MCBTP
+SIRET: 02406684700013
+TVA: FR58024066847
+Client: MARTIN CARRELAGE
+SIRET client: 01585179300974
+Numero facture: FAC-202601-0038
+Date emission: 2026-01-09
+Date echeance: 2026-02-08
+IBAN: FR7699564727554129036630218
+BIC: ZSSQTGRN
+Montant HT: 10799.74 EUR
+Montant TVA: 2159.95 EUR
+Montant TTC: 12959.69 EUR
+
+Lignes:
+- Generate Synergistic Technologies | qty=4 | pu=344.58 | total=1378.32
+- Re-Contextualize 24/7 Bandwidth | qty=5 | pu=1177.78 | total=5888.90
+- Matrix Real-Time Networks | qty=3 | pu=849.59 | total=2548.77
+- Redefine Out-Of-The-Box Paradigms | qty=5 | pu=196.75 | total=983.75

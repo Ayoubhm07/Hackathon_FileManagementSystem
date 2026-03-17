@@ -1,0 +1,13 @@
+ATTESTATION DE VIGILANCE
+
+Fournisseur: VANNERIE DU BOISLE
+SIRET: 01585179301113
+TVA: FR74015851793
+Client: JUSTE A COTE
+SIRET client: 02405478500027
+Reference attestation: ATTEST-202601-0034
+Date emission: 2026-01-26
+Date expiration: 2026-05-26
+
+Notes:
+- Document de conformite pour verification fournisseur.

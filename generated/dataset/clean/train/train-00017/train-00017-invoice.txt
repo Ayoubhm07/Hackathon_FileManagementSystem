@@ -1,0 +1,23 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: LE SYMPA SNACK
+SIRET: 00554155200039
+TVA: FR32005541552
+Client: PLANET'CHAUSS
+SIRET client: 02407118500011
+Numero facture: FAC-202507-0017
+Date emission: 2025-07-25
+Date echeance: 2025-08-24
+IBAN: FR7634795191527283449817205
+BIC: RYLCEKBW
+Montant HT: 7367.80 EUR
+Montant TVA: 1473.56 EUR
+Montant TTC: 8991.35 EUR
+
+Lignes:
+- Transform Innovative Channels | qty=1 | pu=396.17 | total=396.17
+- Engage Viral Action-Items | qty=5 | pu=1131.75 | total=5658.75
+- Grow Global Partnerships | qty=2 | pu=656.44 | total=1312.88
+
+Notes:
+- Montant TTC incoherent avec le detail des lignes.

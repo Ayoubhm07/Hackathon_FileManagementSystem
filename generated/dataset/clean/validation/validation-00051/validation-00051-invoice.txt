@@ -1,0 +1,23 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: AGT DISTRIBUTION
+SIRET: 02404142800012
+TVA: FR43024041428
+Client: DUBOIS
+SIRET client: 00562011700019
+Numero facture: FAC-202601-0051
+Date emission: 2026-01-02
+Date echeance: 2026-02-01
+IBAN: FR7648431825069225367439902
+BIC: QBZTYIBU
+Montant HT: 4388.00 EUR
+Montant TVA: 877.60 EUR
+Montant TTC: 5265.60 EUR
+
+Lignes:
+- Envisioneer Plug-And-Play Initiatives | qty=1 | pu=932.55 | total=932.55
+- Repurpose Front-End Metrics | qty=1 | pu=236.70 | total=236.70
+- Disintermediate Open-Source Content | qty=5 | pu=643.75 | total=3218.75
+
+Notes:
+- Attestation hors validite.

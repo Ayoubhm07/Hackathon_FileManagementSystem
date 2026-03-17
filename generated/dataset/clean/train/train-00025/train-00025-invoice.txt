@@ -1,0 +1,24 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: LE FIACRE
+SIRET: 00732021100035
+TVA: FR39007320211
+Client: ETABLISSEMENTS GUERARD
+SIRET client: 01638003200058
+Numero facture: FAC-202511-0025
+Date emission: 2025-11-13
+Date echeance: 2025-12-13
+IBAN: FR7692158293362518011364343
+BIC: IXQMMVMN
+Montant HT: 15261.39 EUR
+Montant TVA: 3052.28 EUR
+Montant TTC: 18313.67 EUR
+
+Lignes:
+- Extend Killer Relationships | qty=3 | pu=1235.44 | total=3706.32
+- Extend Collaborative E-Markets | qty=4 | pu=1492.66 | total=5970.64
+- Morph Back-End Content | qty=2 | pu=1066.39 | total=2132.78
+- Seize Open-Source Deliverables | qty=3 | pu=1150.55 | total=3451.65
+
+Notes:
+- Le devis et la facture n'ont pas le meme montant.

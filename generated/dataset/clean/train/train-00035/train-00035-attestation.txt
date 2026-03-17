@@ -1,0 +1,13 @@
+ATTESTATION DE VIGILANCE
+
+Fournisseur: SUPER U
+SIRET: 01585179300875
+TVA: FR74015851793
+Client: GOLF CLUB LA BAULE
+SIRET client: 00578096000083
+Reference attestation: ATTEST-202509-0035
+Date emission: 2025-09-30
+Date expiration: 2026-01-28
+
+Notes:
+- Document de conformite pour verification fournisseur.

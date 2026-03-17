@@ -1,0 +1,19 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: PLOMBERIE SANITAIRE 2000
+SIRET: 02405800000019
+TVA: FR95024058000
+Client: TERROIRS DE FAMILLE
+SIRET client: 01555065000061
+Numero facture: FAC-202603-0052
+Date emission: 2026-03-09
+Date echeance: 2026-04-08
+IBAN: FR7673637896738462824579503
+BIC: UWIRKVVL
+Montant HT: 5113.47 EUR
+Montant TVA: 1022.69 EUR
+Montant TTC: 6136.16 EUR
+
+Lignes:
+- Innovate Sticky Vortals | qty=5 | pu=882.39 | total=4411.95
+- Re-Contextualize Next-Generation E-Services | qty=3 | pu=233.84 | total=701.52

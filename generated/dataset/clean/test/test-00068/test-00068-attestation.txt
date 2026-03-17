@@ -1,0 +1,14 @@
+ATTESTATION DE VIGILANCE
+
+Fournisseur: KOTRI
+SIRET: 02405831500029
+TVA: FR70024058315
+Client: E.C.P.P.
+SIRET client: 02406496600013
+Reference attestation: ATTEST-202509-0068
+Date emission: 2025-09-17
+Date expiration: 2025-09-09
+
+Notes:
+- Document de conformite pour verification fournisseur.
+- Attestation hors validite.

@@ -1,0 +1,23 @@
+DEVIS
+
+Fournisseur: JOUONGOUNI
+SIRET: 02404083400020
+TVA: FR07024040834
+Client: DOUKA BE KAWENI
+SIRET client: 02404912400407
+Numero devis: DEV-202601-0026
+Date emission: 2026-01-07
+Date echeance: 2026-02-06
+Montant HT: 8102.88 EUR
+Montant TVA: 1620.57 EUR
+Montant TTC: 9723.45 EUR
+
+Lignes:
+- Drive Impactful E-Markets | qty=1 | pu=693.81 | total=693.81
+- Extend User-Centric Platforms | qty=1 | pu=1454.19 | total=1454.19
+- Deploy Turn-Key Eyeballs | qty=5 | pu=656.61 | total=3283.05
+- Scale Impactful Portals | qty=4 | pu=713.79 | total=2855.16
+
+Notes:
+- Devis commercial lie a la facture.
+- Le devis et la facture n'ont pas le meme montant.

@@ -1,0 +1,13 @@
+ATTESTATION DE VIGILANCE
+
+Fournisseur: MANONGA LAZA
+SIRET: 02403660000021
+TVA: FR12024036600
+Client: SNC MCBTP
+SIRET client: 02406684700013
+Reference attestation: ATTEST-202508-0033
+Date emission: 2025-08-08
+Date expiration: 2025-12-06
+
+Notes:
+- Document de conformite pour verification fournisseur.

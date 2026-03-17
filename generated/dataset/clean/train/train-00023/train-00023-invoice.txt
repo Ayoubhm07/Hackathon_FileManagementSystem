@@ -1,0 +1,24 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: DOUKA BE KOUNGOU
+SIRET: 02404912400210
+TVA: FR45024049124
+Client: ENTREPRISE TSARA
+SIRET client: 02405995800017
+Numero facture: FAC-202509-0023
+Date emission: 2025-09-16
+Date echeance: 2025-10-16
+IBAN: FR7689510109159427182999131
+BIC: VFNQCPAJ
+Montant HT: 6062.31 EUR
+Montant TVA: 1212.46 EUR
+Montant TTC: 7274.77 EUR
+
+Lignes:
+- Productize Cutting-Edge Synergies | qty=4 | pu=492.34 | total=1969.36
+- Re-Intermediate Ubiquitous Roi | qty=4 | pu=299.96 | total=1199.84
+- Enable Front-End E-Services | qty=5 | pu=514.38 | total=2571.90
+- Extend Revolutionary Portals | qty=1 | pu=321.21 | total=321.21
+
+Notes:
+- Identifiant fournisseur potentiellement falsifie.

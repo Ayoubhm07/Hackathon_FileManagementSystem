@@ -1,0 +1,23 @@
+DEVIS
+
+Fournisseur: ROCHE VILAINE OCEAN
+SIRET: 00738004100074
+TVA: FR79007380041
+Client: MAECHA CONSTRUCTION
+SIRET client: 02404876100035
+Numero devis: DEV-202603-0027
+Date emission: 2026-02-28
+Date echeance: 2026-03-30
+Montant HT: 14253.08 EUR
+Montant TVA: 2850.62 EUR
+Montant TTC: 17103.70 EUR
+
+Lignes:
+- Incentivize Rich Deliverables | qty=5 | pu=433.44 | total=2167.20
+- Streamline 24/365 Vortals | qty=4 | pu=1347.71 | total=5390.84
+- Orchestrate Back-End Info-Mediaries | qty=2 | pu=1044.39 | total=2088.78
+- Transition Real-Time Solutions | qty=5 | pu=957.92 | total=4789.60
+
+Notes:
+- Devis commercial lie a la facture.
+- Le devis et la facture n'ont pas le meme montant.

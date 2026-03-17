@@ -1,0 +1,24 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: JOUONGOUNI
+SIRET: 02404083400020
+TVA: FR07024040834
+Client: DOUKA BE KAWENI
+SIRET client: 02404912400407
+Numero facture: FAC-202601-0026
+Date emission: 2026-01-13
+Date echeance: 2026-02-12
+IBAN: FR7638109609589979503247759
+BIC: LDPGASAA
+Montant HT: 8286.21 EUR
+Montant TVA: 1657.24 EUR
+Montant TTC: 9943.45 EUR
+
+Lignes:
+- Drive Impactful E-Markets | qty=1 | pu=693.81 | total=693.81
+- Extend User-Centric Platforms | qty=1 | pu=1454.19 | total=1454.19
+- Deploy Turn-Key Eyeballs | qty=5 | pu=656.61 | total=3283.05
+- Scale Impactful Portals | qty=4 | pu=713.79 | total=2855.16
+
+Notes:
+- Le devis et la facture n'ont pas le meme montant.

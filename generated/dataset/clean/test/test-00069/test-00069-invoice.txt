@@ -1,0 +1,20 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: DORAS
+SIRET: 01585179301048
+TVA: FR74015851793
+Client: MPPI
+SIRET client: 01585179300982
+Numero facture: FAC-202601-0069
+Date emission: 2026-01-03
+Date echeance: 2026-02-02
+IBAN: FR7601990474422521414217823
+BIC: LYKURICY
+Montant HT: 4652.38 EUR
+Montant TVA: 930.48 EUR
+Montant TTC: 5582.86 EUR
+
+Lignes:
+- Generate Extensible Web-Readiness | qty=2 | pu=120.05 | total=240.10
+- Revolutionize Seamless Applications | qty=2 | pu=831.33 | total=1662.66
+- Orchestrate Clicks-And-Mortar Systems | qty=3 | pu=916.54 | total=2749.62

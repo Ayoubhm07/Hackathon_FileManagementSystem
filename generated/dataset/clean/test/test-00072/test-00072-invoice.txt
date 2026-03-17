@@ -1,0 +1,21 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: HOTEL DARCY DIJON CENTRE
+SIRET: 01565125000019
+TVA: FR39015651250
+Client: ENTREPRISE ASSANI ALI
+SIRET client: 02407098900025
+Numero facture: FAC-202511-0072
+Date emission: 2025-11-08
+Date echeance: 2025-12-08
+IBAN: FR7657515971235636342919059
+BIC: CMRNVGMG
+Montant HT: 2970.61 EUR
+Montant TVA: 594.12 EUR
+Montant TTC: 3564.73 EUR
+
+Lignes:
+- Re-Contextualize One-To-One Info-Mediaries | qty=2 | pu=663.93 | total=1327.86
+- Reinvent Robust Experiences | qty=1 | pu=151.79 | total=151.79
+- Repurpose Open-Source Users | qty=1 | pu=517.48 | total=517.48
+- Engineer Synergistic Partnerships | qty=1 | pu=973.48 | total=973.48

@@ -1,0 +1,22 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: MINETTO MATERIAUX
+SIRET: 00735020000075
+TVA: FR87007350200
+Client: LOULOU BEAUTE
+SIRET client: 02406830600018
+Numero facture: FAC-202602-0064
+Date emission: 2026-02-06
+Date echeance: 2026-03-08
+IBAN: FR7628142188259281800672385
+BIC: EGOXNINL
+Montant HT: 2194.04 EUR
+Montant TVA: 438.81 EUR
+Montant TTC: 2632.85 EUR
+
+Lignes:
+- Transform Turn-Key Solutions | qty=4 | pu=259.80 | total=1039.20
+- Synergize Sticky Methodologies | qty=1 | pu=1154.84 | total=1154.84
+
+Notes:
+- Identifiant fournisseur potentiellement falsifie.

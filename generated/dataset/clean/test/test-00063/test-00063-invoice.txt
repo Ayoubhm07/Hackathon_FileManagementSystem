@@ -1,0 +1,23 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: SUD MENUISERIE ET BTP
+SIRET: 02405244100014
+TVA: FR05024052441
+Client: EUROPE SOL
+SIRET client: 02405759800013
+Numero facture: FAC-202511-0063
+Date emission: 2025-11-10
+Date echeance: 2025-12-10
+IBAN: FR7661191633014106783894420
+BIC: CRJIZSEN
+Montant HT: 8078.25 EUR
+Montant TVA: 1615.65 EUR
+Montant TTC: 9693.90 EUR
+
+Lignes:
+- Seize Efficient Deliverables | qty=4 | pu=1411.26 | total=5645.04
+- Implement 24/7 Infrastructures | qty=3 | pu=594.77 | total=1784.31
+- Repurpose Plug-And-Play Systems | qty=5 | pu=129.78 | total=648.90
+
+Notes:
+- Identifiant fournisseur potentiellement falsifie.

@@ -1,0 +1,21 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: MPPI
+SIRET: 01585179300982
+TVA: FR74015851793
+Client: E.E.C.F
+SIRET client: 02405193000030
+Numero facture: FAC-202511-0045
+Date emission: 2025-11-12
+Date echeance: 2025-12-12
+IBAN: FR7656068475661014288084561
+BIC: YHPTOJBH
+Montant HT: 7594.03 EUR
+Montant TVA: 1518.81 EUR
+Montant TTC: 9112.84 EUR
+
+Lignes:
+- Streamline Plug-And-Play E-Business | qty=4 | pu=1163.76 | total=4655.04
+- Orchestrate Enterprise Convergence | qty=1 | pu=759.20 | total=759.20
+- Matrix E-Business Users | qty=2 | pu=1037.68 | total=2075.36
+- Redefine Distributed Deliverables | qty=1 | pu=104.43 | total=104.43

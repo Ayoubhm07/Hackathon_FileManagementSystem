@@ -1,0 +1,22 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: LE FIACRE
+SIRET: 00732021100035
+TVA: FR39007320211
+Client: DORAS
+SIRET client: 01585179300206
+Numero facture: FAC-202507-0074
+Date emission: 2025-07-22
+IBAN: FR7614178853047257188438234
+BIC: XRCKJBNK
+Montant HT: 17018.75 EUR
+Montant TVA: 3403.75 EUR
+Montant TTC: 20422.50 EUR
+
+Lignes:
+- Synergize Plug-And-Play Web Services | qty=5 | pu=1076.07 | total=5380.35
+- Visualize Ubiquitous Networks | qty=5 | pu=1143.40 | total=5717.00
+- Deliver Clicks-And-Mortar Functionalities | qty=4 | pu=1480.35 | total=5921.40
+
+Notes:
+- La date d'echeance est absente du document.

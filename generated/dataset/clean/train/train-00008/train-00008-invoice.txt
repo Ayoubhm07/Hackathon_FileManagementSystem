@@ -1,0 +1,21 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: L'ENFANT NOIR
+SIRET: 02405142700011
+TVA: FR67024051427
+Client: FAMILLE CHERON / HERITIERS MISSET CHERON
+SIRET client: 01555065000046
+Numero facture: FAC-202508-0008
+Date emission: 2025-08-28
+Date echeance: 2025-09-27
+IBAN: FR7605266452671210987938287
+BIC: XHBWFRUF
+Montant HT: 4950.60 EUR
+Montant TVA: 990.12 EUR
+Montant TTC: 5940.72 EUR
+
+Lignes:
+- Incubate Granular Networks | qty=1 | pu=641.10 | total=641.10
+- Expedite Visionary Convergence | qty=5 | pu=495.35 | total=2476.75
+- Strategize Frictionless Action-Items | qty=1 | pu=1278.67 | total=1278.67
+- Synthesize Back-End Web-Readiness | qty=2 | pu=277.04 | total=554.08

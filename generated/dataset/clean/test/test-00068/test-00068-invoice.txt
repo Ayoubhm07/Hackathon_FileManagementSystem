@@ -1,0 +1,22 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: KOTRI
+SIRET: 02405831500029
+TVA: FR70024058315
+Client: E.C.P.P.
+SIRET client: 02406496600013
+Numero facture: FAC-202509-0068
+Date emission: 2025-09-17
+Date echeance: 2025-10-17
+IBAN: FR7631372711917400589789833
+BIC: IMPQRTOV
+Montant HT: 3975.58 EUR
+Montant TVA: 795.12 EUR
+Montant TTC: 4770.70 EUR
+
+Lignes:
+- Facilitate Bricks-And-Clicks Deliverables | qty=3 | pu=1272.32 | total=3816.96
+- Synergize Frictionless Initiatives | qty=1 | pu=158.62 | total=158.62
+
+Notes:
+- Attestation hors validite.

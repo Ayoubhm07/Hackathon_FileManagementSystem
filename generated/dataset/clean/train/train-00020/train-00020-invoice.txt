@@ -1,0 +1,23 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: ENT. DE MENUISERIE A. MUGNIER
+SIRET: 01555140100035
+TVA: FR28015551401
+Client: DALI
+SIRET client: 02404052900026
+Numero facture: FAC-202510-0020
+Date emission: 2025-10-27
+Date echeance: 2025-11-26
+IBAN: FR7666845800879284037370431
+BIC: HNAAGXME
+Montant HT: 5560.48 EUR
+Montant TVA: 1112.10 EUR
+Montant TTC: 6822.57 EUR
+
+Lignes:
+- Embrace Global Bandwidth | qty=2 | pu=1343.59 | total=2687.18
+- Enhance Distributed Solutions | qty=5 | pu=191.77 | total=958.85
+- Syndicate Distributed Functionalities | qty=5 | pu=382.89 | total=1914.45
+
+Notes:
+- Montant TTC incoherent avec le detail des lignes.

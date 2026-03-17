@@ -1,0 +1,11 @@
+{
+  "documents": 101,
+  "cases": 74,
+  "synthetic_documents": 101,
+  "real_example_documents": 0,
+  "splits": {
+    "test": 20,
+    "train": 42,
+    "validation": 12
+  }
+}

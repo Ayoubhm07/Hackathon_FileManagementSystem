@@ -1,0 +1,19 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: VANNERIE DU BOISLE
+SIRET: 00722033800037
+TVA: FR53007220338
+Client: JUSTE A COTE
+SIRET client: 02405478500027
+Numero facture: FAC-202601-0034
+Date emission: 2026-01-26
+Date echeance: 2026-02-25
+IBAN: FR7654137231195911121495288
+BIC: QYIIHXNP
+Montant HT: 5237.29 EUR
+Montant TVA: 1047.46 EUR
+Montant TTC: 6284.75 EUR
+
+Lignes:
+- Extend Web-Enabled Markets | qty=5 | pu=966.40 | total=4832.00
+- Scale Virtual Schemas | qty=1 | pu=405.29 | total=405.29

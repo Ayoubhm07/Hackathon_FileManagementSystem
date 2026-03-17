@@ -1,0 +1,19 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: MANONGA LAZA
+SIRET: 02406934600013
+TVA: FR86024069346
+Client: SNC MCBTP
+SIRET client: 02406684700013
+Numero facture: FAC-202508-0033
+Date emission: 2025-08-08
+Date echeance: 2025-09-07
+IBAN: FR7635106652963625022447277
+BIC: DDQSDZZR
+Montant HT: 8613.78 EUR
+Montant TVA: 1722.76 EUR
+Montant TTC: 10336.54 EUR
+
+Lignes:
+- Productize Collaborative E-Business | qty=3 | pu=1132.31 | total=3396.93
+- Architect B2C Mindshare | qty=5 | pu=1043.37 | total=5216.85

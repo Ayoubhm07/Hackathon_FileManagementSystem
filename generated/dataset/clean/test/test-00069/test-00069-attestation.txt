@@ -1,0 +1,13 @@
+ATTESTATION DE VIGILANCE
+
+Fournisseur: DORAS
+SIRET: 02405358900016
+TVA: FR54024053589
+Client: MPPI
+SIRET client: 01585179300982
+Reference attestation: ATTEST-202601-0069
+Date emission: 2026-01-03
+Date expiration: 2026-05-03
+
+Notes:
+- Document de conformite pour verification fournisseur.

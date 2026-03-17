@@ -1,0 +1,24 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: HAVANA CAFE
+SIRET: 02403950500011
+TVA: FR94024039505
+Client: DOLMEN RENNES PACE
+SIRET client: 00708077300182
+Numero facture: FAC-202601-0018
+Date emission: 2026-01-21
+Date echeance: 2026-02-20
+IBAN: FR7600691960695609048464979
+BIC: RNULNEUL
+Montant HT: 11482.00 EUR
+Montant TVA: 2296.40 EUR
+Montant TTC: 13928.39 EUR
+
+Lignes:
+- Evolve Integrated Synergies | qty=1 | pu=630.00 | total=630.00
+- Re-Contextualize Proactive E-Markets | qty=4 | pu=1481.12 | total=5924.48
+- Syndicate Granular Channels | qty=4 | pu=879.39 | total=3517.56
+- Target Real-Time Markets | qty=1 | pu=1409.96 | total=1409.96
+
+Notes:
+- Montant TTC incoherent avec le detail des lignes.

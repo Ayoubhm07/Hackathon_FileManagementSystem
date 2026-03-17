@@ -1,0 +1,22 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: C.E.M
+SIRET: 02404098200027
+TVA: FR63024040982
+Client: APRR
+SIRET client: 01625002901216
+Numero facture: FAC-202510-0019
+Date emission: 2025-10-25
+Date echeance: 2025-11-24
+IBAN: FR7681574532463170525838700
+BIC: WDZVPNSI
+Montant HT: 2715.84 EUR
+Montant TVA: 543.17 EUR
+Montant TTC: 3409.00 EUR
+
+Lignes:
+- Extend Bleeding-Edge Architectures | qty=3 | pu=132.05 | total=396.15
+- Evolve Mission-Critical Niches | qty=3 | pu=773.23 | total=2319.69
+
+Notes:
+- Montant TTC incoherent avec le detail des lignes.

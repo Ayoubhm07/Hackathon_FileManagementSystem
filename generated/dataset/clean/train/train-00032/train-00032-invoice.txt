@@ -1,0 +1,24 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: LAUDIS
+SIRET: 02404345700027
+TVA: FR19024043457
+Client: HOTEL RESTAURANT LE PROVENCE
+SIRET client: 00734156300034
+Numero facture: FAC-202509-0032
+Date emission: 2025-09-25
+Date echeance: 2025-10-25
+IBAN: FR7610115114065429453603809
+BIC: BDWDPCVX
+Montant HT: 12596.97 EUR
+Montant TVA: 2519.39 EUR
+Montant TTC: 15116.36 EUR
+
+Lignes:
+- Productize Integrated E-Commerce | qty=4 | pu=1445.97 | total=5783.88
+- Morph Turn-Key Roi | qty=4 | pu=1078.86 | total=4315.44
+- Scale Next-Generation Info-Mediaries | qty=2 | pu=634.65 | total=1269.30
+- Transform B2B Infrastructures | qty=3 | pu=409.45 | total=1228.35
+
+Notes:
+- Attestation hors validite.

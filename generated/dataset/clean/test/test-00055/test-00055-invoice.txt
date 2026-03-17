@@ -1,0 +1,21 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: SNC MCBTP
+SIRET: 02406684700013
+TVA: FR58024066847
+Client: FLEUR D'OR
+SIRET client: 02404946200021
+Numero facture: FAC-202511-0055
+Date emission: 2025-11-29
+Date echeance: 2025-12-29
+IBAN: FR7671946090330774437517805
+BIC: IBAAFVBK
+Montant HT: 10619.25 EUR
+Montant TVA: 2123.85 EUR
+Montant TTC: 12743.10 EUR
+
+Lignes:
+- Transition One-To-One Niches | qty=3 | pu=140.73 | total=422.19
+- Maximize Best-Of-Breed Info-Mediaries | qty=1 | pu=545.28 | total=545.28
+- Redefine Global Markets | qty=5 | pu=1010.26 | total=5051.30
+- Revolutionize Virtual Networks | qty=4 | pu=1150.12 | total=4600.48

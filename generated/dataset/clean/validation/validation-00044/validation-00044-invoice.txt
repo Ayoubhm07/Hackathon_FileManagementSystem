@@ -1,0 +1,21 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: TRANSMECA
+SIRET: 02405811700037
+TVA: FR58024058117
+Client: SFR
+SIRET client: 02407217500128
+Numero facture: FAC-202508-0044
+Date emission: 2025-08-11
+Date echeance: 2025-09-10
+IBAN: FR7664135502193606096765508
+BIC: XZRJVTVQ
+Montant HT: 9756.86 EUR
+Montant TVA: 1951.37 EUR
+Montant TTC: 11708.23 EUR
+
+Lignes:
+- Deliver Global Networks | qty=5 | pu=1203.60 | total=6018.00
+- Drive Best-Of-Breed Technologies | qty=3 | pu=1014.67 | total=3044.01
+- Aggregate Intuitive E-Commerce | qty=2 | pu=201.72 | total=403.44
+- Matrix Magnetic Infrastructures | qty=1 | pu=291.41 | total=291.41

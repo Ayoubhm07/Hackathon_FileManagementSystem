@@ -1,0 +1,19 @@
+FACTURE FOURNISSEUR
+
+Fournisseur: KALO
+SIRET: 02405535200033
+TVA: FR08024055352
+Client: DORAS
+SIRET client: 01585179300131
+Numero facture: FAC-202510-0009
+Date emission: 2025-10-19
+Date echeance: 2025-11-18
+IBAN: FR7678667932366938461892575
+BIC: JDOQISLB
+Montant HT: 1731.46 EUR
+Montant TVA: 346.29 EUR
+Montant TTC: 2077.75 EUR
+
+Lignes:
+- Disintermediate Frictionless Experiences | qty=4 | pu=357.74 | total=1430.96
+- Monetize Integrated E-Services | qty=1 | pu=300.50 | total=300.50
