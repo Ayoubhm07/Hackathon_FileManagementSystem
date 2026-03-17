@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: auth-service
+
+keycloak:
+  server-url: ${KEYCLOAK_URL:http://keycloak:8080}
+  realm: ${KEYCLOAK_REALM:docflow}
+  admin-client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:admin-cli}
+  admin-client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET:}
+  admin-username: ${KEYCLOAK_ADMIN_USERNAME:admin}
+  admin-password: ${KEYCLOAK_ADMIN_PASSWORD:admin}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  pattern:
+    console: '{"timestamp":"%d{yyyy-MM-dd HH:mm:ss.SSS}","level":"%level","service":"auth-service","correlationId":"%X{correlationId}","logger":"%logger{36}","message":"%msg"}%n'

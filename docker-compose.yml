@@ -1,0 +1,403 @@
+version: '3.8'
+
+networks:
+  docflow-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  minio_data:
+  airflow_logs:
+  keycloak_data:
+  postgres_data:
+
+services:
+
+  # ─── Infrastructure ────────────────────────────────────────────────────────
+
+  mongodb:
+    image: mongo:7.0
+    container_name: docflow-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: docflow
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - docflow-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  minio:
+    image: minio/minio:latest
+    container_name: docflow-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - docflow-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: docflow-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - docflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0
+    container_name: docflow-keycloak
+    restart: unless-stopped
+    command: start-dev --import-realm
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: dev-mem
+      KC_HTTP_PORT: 8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./services/auth-service/keycloak:/opt/keycloak/data/import:ro
+      - keycloak_data:/opt/keycloak/data
+    networks:
+      - docflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health/ready || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  # ─── Backend Services ──────────────────────────────────────────────────────
+
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    container_name: docflow-auth-service
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      AUTH_SERVICE_PORT: 8081
+      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    networks:
+      - docflow-network
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  upload-service:
+    build:
+      context: ./services/upload-service
+      dockerfile: Dockerfile
+    container_name: docflow-upload-service
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3001
+      MONGO_URI: ${MONGO_URI}
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_USE_SSL: "false"
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      AIRFLOW_BASE_URL: http://airflow-webserver:8080
+      AIRFLOW_USERNAME: ${AIRFLOW_ADMIN_USER}
+      AIRFLOW_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    networks:
+      - docflow-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  validation-service:
+    build:
+      context: ./services/validation-service
+      dockerfile: Dockerfile
+    container_name: docflow-validation-service
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3002
+      MONGO_URI: ${MONGO_URI}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    networks:
+      - docflow-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  ocr-service:
+    build:
+      context: ./services/ocr-service
+      dockerfile: Dockerfile
+    container_name: docflow-ocr-service
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      PORT: 8001
+      MONGO_URI: ${MONGO_URI}
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_USE_SSL: "false"
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    networks:
+      - docflow-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  classification-service:
+    build:
+      context: ./services/classification-service
+      dockerfile: Dockerfile
+    container_name: docflow-classification-service
+    restart: unless-stopped
+    ports:
+      - "8002:8002"
+    environment:
+      PORT: 8002
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    networks:
+      - docflow-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  extraction-service:
+    build:
+      context: ./services/extraction-service
+      dockerfile: Dockerfile
+    container_name: docflow-extraction-service
+    restart: unless-stopped
+    ports:
+      - "8003:8003"
+    environment:
+      PORT: 8003
+      MONGO_URI: ${MONGO_URI}
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_USE_SSL: "false"
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    networks:
+      - docflow-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile
+    container_name: docflow-api-gateway
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3000
+      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      UPLOAD_SERVICE_URL: http://upload-service:3001
+      VALIDATION_SERVICE_URL: http://validation-service:3002
+      AUTH_SERVICE_URL: http://auth-service:8081
+      THROTTLE_TTL: 60
+      THROTTLE_LIMIT: 100
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    networks:
+      - docflow-network
+    depends_on:
+      upload-service:
+        condition: service_healthy
+      validation-service:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # ─── Airflow ───────────────────────────────────────────────────────────────
+
+  airflow-webserver:
+    build:
+      context: ./services/airflow-pipeline
+      dockerfile: Dockerfile
+    container_name: docflow-airflow-webserver
+    restart: unless-stopped
+    command: webserver
+    ports:
+      - "8888:8080"
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_WEBSERVER_SECRET_KEY}
+      AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
+      OCR_SERVICE_URL: http://ocr-service:8001
+      CLASSIFICATION_SERVICE_URL: http://classification-service:8002
+      EXTRACTION_SERVICE_URL: http://extraction-service:8003
+      VALIDATION_SERVICE_URL: http://validation-service:3002
+      UPLOAD_SERVICE_URL: http://upload-service:3001
+      _AIRFLOW_WWW_USER_CREATE: "true"
+      _AIRFLOW_WWW_USER_USERNAME: ${AIRFLOW_ADMIN_USER}
+      _AIRFLOW_WWW_USER_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD}
+    volumes:
+      - airflow_logs:/opt/airflow/logs
+    networks:
+      - docflow-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  airflow-scheduler:
+    build:
+      context: ./services/airflow-pipeline
+      dockerfile: Dockerfile
+    container_name: docflow-airflow-scheduler
+    restart: unless-stopped
+    command: scheduler
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      OCR_SERVICE_URL: http://ocr-service:8001
+      CLASSIFICATION_SERVICE_URL: http://classification-service:8002
+      EXTRACTION_SERVICE_URL: http://extraction-service:8003
+      VALIDATION_SERVICE_URL: http://validation-service:3002
+      UPLOAD_SERVICE_URL: http://upload-service:3001
+    volumes:
+      - airflow_logs:/opt/airflow/logs
+    networks:
+      - docflow-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ─── Frontends ─────────────────────────────────────────────────────────────
+
+  frontend-crm:
+    build:
+      context: ./services/frontend-crm
+      dockerfile: Dockerfile
+    container_name: docflow-frontend-crm
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    networks:
+      - docflow-network
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+
+  frontend-compliance:
+    build:
+      context: ./services/frontend-compliance
+      dockerfile: Dockerfile
+    container_name: docflow-frontend-compliance
+    restart: unless-stopped
+    ports:
+      - "5174:80"
+    networks:
+      - docflow-network
+    depends_on:
+      api-gateway:
+        condition: service_healthy

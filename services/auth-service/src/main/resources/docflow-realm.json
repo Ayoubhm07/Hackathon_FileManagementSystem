@@ -1,0 +1,89 @@
+{
+  "realm": "docflow",
+  "enabled": true,
+  "displayName": "DocFlow",
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "accessTokenLifespan": 300,
+  "refreshTokenMaxReuse": 0,
+  "clients": [
+    {
+      "clientId": "api-gateway",
+      "name": "API Gateway",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "docflow-gateway-secret",
+      "bearerOnly": false,
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "serviceAccountsEnabled": true,
+      "directAccessGrantsEnabled": false
+    },
+    {
+      "clientId": "crm-app",
+      "name": "CRM Frontend",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "attributes": { "pkce.code.challenge.method": "S256" },
+      "redirectUris": ["http://localhost:5173/*", "http://frontend-crm:5173/*"],
+      "webOrigins": ["http://localhost:5173", "http://frontend-crm:5173"]
+    },
+    {
+      "clientId": "compliance-app",
+      "name": "Compliance Frontend",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "attributes": { "pkce.code.challenge.method": "S256" },
+      "redirectUris": ["http://localhost:5174/*", "http://frontend-compliance:5174/*"],
+      "webOrigins": ["http://localhost:5174", "http://frontend-compliance:5174"]
+    }
+  ],
+  "roles": {
+    "realm": [
+      { "name": "ROLE_OPERATOR", "description": "Can upload documents and view own submissions" },
+      { "name": "ROLE_VALIDATOR", "description": "Can validate documents and view all submissions" },
+      { "name": "ROLE_ADMIN", "description": "Full access including user management" }
+    ]
+  },
+  "users": [
+    {
+      "username": "operator@docflow.io",
+      "email": "operator@docflow.io",
+      "firstName": "Alice",
+      "lastName": "Operator",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "operator123", "temporary": false }],
+      "realmRoles": ["ROLE_OPERATOR"]
+    },
+    {
+      "username": "validator@docflow.io",
+      "email": "validator@docflow.io",
+      "firstName": "Bob",
+      "lastName": "Validator",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "validator123", "temporary": false }],
+      "realmRoles": ["ROLE_VALIDATOR"]
+    },
+    {
+      "username": "admin@docflow.io",
+      "email": "admin@docflow.io",
+      "firstName": "Charlie",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "admin123", "temporary": false }],
+      "realmRoles": ["ROLE_ADMIN", "ROLE_VALIDATOR", "ROLE_OPERATOR"]
+    }
+  ]
+}

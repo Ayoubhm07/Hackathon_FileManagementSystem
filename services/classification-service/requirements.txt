@@ -1,0 +1,12 @@
+fastapi==0.109.2
+uvicorn[standard]==0.27.1
+pydantic==2.6.1
+pydantic-settings==2.2.1
+scikit-learn==1.4.0
+joblib==1.3.2
+numpy==1.26.4
+boto3==1.34.34
+pymongo==4.6.1
+structlog==24.1.0
+httpx==0.26.0
+python-dotenv==1.0.1
