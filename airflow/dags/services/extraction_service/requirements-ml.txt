@@ -1,0 +1,5 @@
+spacy==3.7.5
+fr-core-news-md @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_md-3.7.0/fr_core_news_md-3.7.0-py3-none-any.whl
+ultralytics==8.2.60
+opencv-python-headless==4.10.0.84
+numpy==1.26.4

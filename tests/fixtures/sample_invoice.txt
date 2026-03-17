@@ -1,0 +1,29 @@
+FACTURE N°2024-001
+Date : 15/03/2024
+Échéance : 30/04/2024
+
+Émetteur :
+ACME SOLUTIONS SAS
+12 Rue de la Paix
+75002 PARIS
+SIRET : 362 521 879 00001
+N° TVA : FR00362521879
+
+Destinataire :
+CLIENT BETA SARL
+8 Avenue des Champs
+69002 LYON
+
+Désignation                     Quantité   Prix unitaire HT   Total HT
+Développement logiciel               5 j       800,00 €         4 000,00 €
+Conseil et audit                     2 j       950,00 €         1 900,00 €
+                                                                ----------
+                                              Montant HT :     5 900,00 €
+                                              TVA 20%   :     1 180,00 €
+                                              Montant TTC :    7 080,00 €
+
+Coordonnées bancaires :
+IBAN : FR76 3000 6000 0112 3456 7890 189
+BIC  : BNPAFRPP
+
+Conditions de règlement : 30 jours net.
