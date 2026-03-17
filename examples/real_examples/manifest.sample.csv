@@ -1,0 +1,1 @@
+file_path,doc_type,supplier_name,supplier_siret,supplier_vat,customer_name,customer_siret,invoice_number,issue_date,due_date,currency,amount_ht,amount_tva,amount_ttc,source_url,ocr_text_path,style_id,notes
