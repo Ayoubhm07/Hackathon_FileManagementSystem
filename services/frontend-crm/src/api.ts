@@ -1,5 +1,5 @@
 import axios from 'axios';
-import keycloak from './keycloak';
+import keycloak, { getCurrentLocationHref } from './keycloak';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3000',
@@ -11,7 +11,7 @@ api.interceptors.request.use(async (config) => {
     try {
       await keycloak.updateToken(30);
     } catch {
-      keycloak.login();
+      keycloak.login({ redirectUri: getCurrentLocationHref() });
     }
     config.headers.Authorization = `Bearer ${keycloak.token}`;
   }

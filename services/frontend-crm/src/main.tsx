@@ -1,7 +1,7 @@
 import React, { StrictMode, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import keycloak from './keycloak';
+import keycloak, { getCurrentLocationHref } from './keycloak';
 import App from './App';
 import './index.css';
 
@@ -16,10 +16,17 @@ function Root() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const redirectUri = getCurrentLocationHref();
+
     keycloak
-      .init({ onLoad: 'login-required', pkceMethod: 'S256', checkLoginIframe: false })
+      .init({
+        onLoad: 'login-required',
+        pkceMethod: 'S256',
+        checkLoginIframe: false,
+        redirectUri,
+      })
       .then((authenticated) => {
-        if (!authenticated) keycloak.login();
+        if (!authenticated) keycloak.login({ redirectUri });
         setInitialized(true);
       })
       .catch((err) => {

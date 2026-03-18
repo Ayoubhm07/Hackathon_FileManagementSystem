@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import keycloak from './keycloak';
+import keycloak, { getCurrentLocationOrigin } from './keycloak';
 import { UploadZone } from './components/UploadZone';
 import { DocumentList } from './components/DocumentList';
 
@@ -26,7 +26,7 @@ export default function App() {
               {keycloak.tokenParsed?.preferred_username ?? 'Utilisateur'}
             </span>
             <button
-              onClick={() => keycloak.logout()}
+              onClick={() => keycloak.logout({ redirectUri: `${getCurrentLocationOrigin()}/` })}
               className="text-sm text-red-500 hover:text-red-700 transition-colors"
             >
               Déconnexion

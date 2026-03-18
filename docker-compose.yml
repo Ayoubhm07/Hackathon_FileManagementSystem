@@ -110,6 +110,7 @@ services:
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: keycloak_password
       KC_HTTP_PORT: 8080
+      KC_HEALTH_ENABLED: "true"
     ports:
       - "8080:8080"
     volumes:
@@ -120,7 +121,7 @@ services:
       keycloak-postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/health/ready || exit 1"]
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && printf 'GET /health/ready HTTP/1.0\\r\\nHost: localhost\\r\\n\\r\\n' >&3 && timeout 3 cat <&3 | grep -q UP || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 10
@@ -135,9 +136,9 @@ services:
     container_name: docflow-auth-service
     restart: unless-stopped
     ports:
-      - "8081:8081"
+      - "8081:8080"
     environment:
-      AUTH_SERVICE_PORT: 8081
+      AUTH_SERVICE_PORT: 8080
       KEYCLOAK_URL: http://keycloak:8080
       KEYCLOAK_REALM: ${KEYCLOAK_REALM}
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
@@ -148,7 +149,7 @@ services:
       keycloak:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/health"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -166,7 +167,7 @@ services:
       NODE_ENV: ${NODE_ENV:-production}
       PORT: 3001
       MONGO_URI: ${MONGO_URI}
-      MINIO_ENDPOINT: minio:9000
+      MINIO_ENDPOINT: minio
       MINIO_PORT: 9000
       MINIO_USE_SSL: "false"
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
@@ -183,7 +184,7 @@ services:
       minio:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3001/health"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -208,7 +209,7 @@ services:
       mongodb:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3002/health"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -225,7 +226,7 @@ services:
     environment:
       PORT: 8001
       MONGO_URI: ${MONGO_URI}
-      MINIO_ENDPOINT: minio:9000
+      MINIO_ENDPOINT: minio
       MINIO_PORT: 9000
       MINIO_USE_SSL: "false"
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
@@ -239,7 +240,7 @@ services:
       minio:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8001/health >/dev/null || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -255,7 +256,7 @@ services:
       - "8002:8002"
     environment:
       PORT: 8002
-      MINIO_ENDPOINT: minio:9000
+      MINIO_ENDPOINT: minio
       MINIO_USE_SSL: "false"
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
       MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
@@ -263,7 +264,7 @@ services:
     networks:
       - docflow-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8002/health >/dev/null || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -280,7 +281,7 @@ services:
     environment:
       PORT: 8003
       MONGO_URI: ${MONGO_URI}
-      MINIO_ENDPOINT: minio:9000
+      MINIO_ENDPOINT: minio
       MINIO_PORT: 9000
       MINIO_USE_SSL: "false"
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
@@ -294,7 +295,7 @@ services:
       minio:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8003/health >/dev/null || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -315,7 +316,7 @@ services:
       KEYCLOAK_REALM: ${KEYCLOAK_REALM}
       UPLOAD_SERVICE_URL: http://upload-service:3001
       VALIDATION_SERVICE_URL: http://validation-service:3002
-      AUTH_SERVICE_URL: http://auth-service:8081
+      AUTH_SERVICE_URL: http://auth-service:8080
       THROTTLE_TTL: 60
       THROTTLE_LIMIT: 100
       CORS_ORIGIN: ${CORS_ORIGIN}
@@ -330,7 +331,7 @@ services:
       keycloak:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/health"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -424,6 +425,12 @@ services:
         condition: service_healthy
       airflow-init:
         condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "airflow jobs check --job-type SchedulerJob --limit 1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
   # ─── Frontends ─────────────────────────────────────────────────────────────
 

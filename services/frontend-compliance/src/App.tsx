@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import keycloak from './keycloak';
+import keycloak, { getCurrentLocationOrigin } from './keycloak';
 import { ValidationDashboard } from './components/ValidationDashboard';
 import { ValidationResultPanel } from './components/ValidationResultPanel';
 import api from './api';
@@ -28,7 +28,10 @@ export default function App() {
           </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-600">{keycloak.tokenParsed?.preferred_username ?? 'Utilisateur'}</span>
-            <button onClick={() => keycloak.logout()} className="text-sm text-red-500 hover:text-red-700 transition-colors">
+            <button
+              onClick={() => keycloak.logout({ redirectUri: `${getCurrentLocationOrigin()}/` })}
+              className="text-sm text-red-500 hover:text-red-700 transition-colors"
+            >
               Déconnexion
             </button>
           </div>
