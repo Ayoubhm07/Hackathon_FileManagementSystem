@@ -12,7 +12,7 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8002", "--reload
 FROM base AS production
 COPY app/ ./app/
 RUN mkdir -p /app/models
-RUN addgroup --gid 1001 appgroup && adduser --uid 1001 --gid 1001 --disabled-password appuser
+RUN groupadd -g 1001 appgroup && useradd -u 1001 -g 1001 -m -s /bin/sh appuser
 RUN chown -R appuser:appgroup /app
 USER appuser
 EXPOSE 8002

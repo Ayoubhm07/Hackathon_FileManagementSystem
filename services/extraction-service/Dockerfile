@@ -13,7 +13,7 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8003", "--reload
 
 FROM base AS production
 COPY app/ ./app/
-RUN addgroup --gid 1001 appgroup && adduser --uid 1001 --gid 1001 --disabled-password appuser
+RUN groupadd -g 1001 appgroup && useradd -u 1001 -g 1001 -m -s /bin/sh appuser
 USER appuser
 EXPOSE 8003
 HEALTHCHECK --interval=10s --timeout=5s --retries=5 \

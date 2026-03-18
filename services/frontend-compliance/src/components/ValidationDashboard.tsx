@@ -32,10 +32,17 @@ const TYPE_LABELS: Record<DocumentType, string> = {
   UNKNOWN: 'Inconnu',
 };
 
+interface PaginatedDocuments {
+  data: Document[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export function ValidationDashboard() {
   const { data: documents } = useQuery<Document[]>({
     queryKey: ['documents'],
-    queryFn: async () => (await api.get<Document[]>('/documents')).data,
+    queryFn: async () => (await api.get<PaginatedDocuments>('/documents')).data.data,
     refetchInterval: 10_000,
   });
 

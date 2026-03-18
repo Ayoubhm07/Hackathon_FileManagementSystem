@@ -9,7 +9,7 @@ _client: MongoClient | None = None
 def _get_db():
     global _client
     if _client is None:
-        _client = MongoClient(settings.mongodb_uri)
+        _client = MongoClient(settings.mongo_uri)
     return _client.get_default_database()
 
 

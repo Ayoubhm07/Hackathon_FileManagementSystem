@@ -10,12 +10,19 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+interface PaginatedDocuments {
+  data: Document[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export function DocumentList() {
   const { data, isLoading, error } = useQuery<Document[]>({
     queryKey: ['documents'],
     queryFn: async () => {
-      const res = await api.get<Document[]>('/documents');
-      return res.data;
+      const res = await api.get<PaginatedDocuments>('/documents');
+      return res.data.data;
     },
     refetchInterval: 5000,
   });

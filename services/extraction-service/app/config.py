@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    mongodb_uri: str = "mongodb://mongodb:27017/docflow"
+    mongo_uri: str = "mongodb://mongodb:27017/docflow"
     minio_endpoint: str = "minio:9000"
     minio_access_key: str = "minioadmin"
     minio_secret_key: str = "minioadmin"

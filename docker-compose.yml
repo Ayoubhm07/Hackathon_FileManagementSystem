@@ -10,6 +10,7 @@ volumes:
   airflow_logs:
   keycloak_data:
   postgres_data:
+  keycloak_postgres_data:
 
 services:
 
@@ -77,6 +78,25 @@ services:
       retries: 5
       start_period: 10s
 
+  keycloak-postgres:
+    image: postgres:15-alpine
+    container_name: docflow-keycloak-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak_password
+      POSTGRES_DB: keycloak
+    volumes:
+      - keycloak_postgres_data:/var/lib/postgresql/data
+    networks:
+      - docflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
   keycloak:
     image: quay.io/keycloak/keycloak:23.0
     container_name: docflow-keycloak
@@ -85,21 +105,26 @@ services:
     environment:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      KC_DB: dev-mem
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak_password
       KC_HTTP_PORT: 8080
     ports:
       - "8080:8080"
     volumes:
       - ./services/auth-service/keycloak:/opt/keycloak/data/import:ro
-      - keycloak_data:/opt/keycloak/data
     networks:
       - docflow-network
+    depends_on:
+      keycloak-postgres:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/health/ready || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 10
-      start_period: 60s
+      start_period: 90s
 
   # ─── Backend Services ──────────────────────────────────────────────────────
 
@@ -141,7 +166,7 @@ services:
       NODE_ENV: ${NODE_ENV:-production}
       PORT: 3001
       MONGO_URI: ${MONGO_URI}
-      MINIO_ENDPOINT: minio
+      MINIO_ENDPOINT: minio:9000
       MINIO_PORT: 9000
       MINIO_USE_SSL: "false"
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
@@ -200,7 +225,7 @@ services:
     environment:
       PORT: 8001
       MONGO_URI: ${MONGO_URI}
-      MINIO_ENDPOINT: minio
+      MINIO_ENDPOINT: minio:9000
       MINIO_PORT: 9000
       MINIO_USE_SSL: "false"
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
@@ -230,6 +255,10 @@ services:
       - "8002:8002"
     environment:
       PORT: 8002
+      MINIO_ENDPOINT: minio:9000
+      MINIO_USE_SSL: "false"
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       LOG_LEVEL: ${LOG_LEVEL:-info}
     networks:
       - docflow-network
@@ -251,7 +280,7 @@ services:
     environment:
       PORT: 8003
       MONGO_URI: ${MONGO_URI}
-      MINIO_ENDPOINT: minio
+      MINIO_ENDPOINT: minio:9000
       MINIO_PORT: 9000
       MINIO_USE_SSL: "false"
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
@@ -309,6 +338,26 @@ services:
 
   # ─── Airflow ───────────────────────────────────────────────────────────────
 
+  airflow-init:
+    build:
+      context: ./services/airflow-pipeline
+      dockerfile: Dockerfile
+    container_name: docflow-airflow-init
+    command: >
+      bash -c "airflow db init &&
+               airflow users create --username ${AIRFLOW_ADMIN_USER} --password ${AIRFLOW_ADMIN_PASSWORD} --firstname Admin --lastname DocFlow --role Admin --email admin@docflow.io || true"
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    networks:
+      - docflow-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
   airflow-webserver:
     build:
       context: ./services/airflow-pipeline
@@ -324,7 +373,7 @@ services:
       AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
       AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_WEBSERVER_SECRET_KEY}
-      AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
+      AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
       OCR_SERVICE_URL: http://ocr-service:8001
       CLASSIFICATION_SERVICE_URL: http://classification-service:8002
       EXTRACTION_SERVICE_URL: http://extraction-service:8003
@@ -340,6 +389,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 15s
@@ -371,6 +422,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
 
   # ─── Frontends ─────────────────────────────────────────────────────────────
 
