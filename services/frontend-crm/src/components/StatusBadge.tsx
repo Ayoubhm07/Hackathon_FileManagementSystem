@@ -2,10 +2,12 @@ import React from 'react';
 import type { DocumentStatus } from '../types';
 
 const COLORS: Record<DocumentStatus, string> = {
-  UPLOADED: 'bg-blue-100 text-blue-800',
+  UPLOADED:   'bg-blue-100 text-blue-800',
   PROCESSING: 'bg-yellow-100 text-yellow-800',
-  PROCESSED: 'bg-green-100 text-green-800',
-  FAILED: 'bg-red-100 text-red-800',
+  PROCESSED:  'bg-green-100 text-green-800',
+  FAILED:     'bg-red-100 text-red-800',
+  APPROVED:   'bg-emerald-100 text-emerald-800',
+  REJECTED:   'bg-rose-100 text-rose-800',
 };
 
 interface Props {

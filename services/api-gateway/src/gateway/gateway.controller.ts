@@ -1,5 +1,5 @@
 import {
-  Controller, Post, Get, Param, Body,
+  Controller, Post, Get, Patch, Param, Body,
   Headers, Query, UseGuards, HttpCode, HttpStatus, Req,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -49,6 +49,16 @@ export class GatewayController {
   @UseGuards(JwtGuard)
   async getDocument(@Headers() headers: Record<string, string>, @Param('id') id: string): Promise<unknown> {
     return this.gatewayService.proxy('GET', `${this.gatewayService.getServiceUrl('UPLOAD')}/documents/${id}`, headers);
+  }
+
+  @Patch('documents/:id/status')
+  @UseGuards(JwtGuard)
+  async updateDocumentStatus(
+    @Headers() headers: Record<string, string>,
+    @Param('id') id: string,
+    @Body() body: unknown,
+  ): Promise<unknown> {
+    return this.gatewayService.proxy('PATCH', `${this.gatewayService.getServiceUrl('UPLOAD')}/documents/${id}/status`, headers, body);
   }
 
   @Get('results/:id')
