@@ -2,7 +2,7 @@ services:
   # -------------------------
   # MongoDB (private) + disk
   # -------------------------
-  - type: pserv
+  - type: private_service
     name: mongodb
     env: docker
     plan: starter
@@ -24,7 +24,7 @@ services:
   # -------------------------
   # MinIO (private) + disk
   # -------------------------
-  - type: pserv
+  - type: private_service
     name: minio
     env: docker
     plan: starter
@@ -45,7 +45,7 @@ services:
   # -------------------------
   # Keycloak Postgres (private) + disk
   # -------------------------
-  - type: pserv
+  - type: private_service
     name: keycloak-postgres
     env: docker
     plan: starter
@@ -102,7 +102,7 @@ services:
   # -------------------------
   # Private backend services (from repo Dockerfiles)
   # -------------------------
-  - type: pserv
+  - type: private_service
     name: auth-service
     env: docker
     plan: starter
@@ -120,7 +120,7 @@ services:
       - key: KEYCLOAK_ADMIN_PASSWORD
         sync: false
 
-  - type: pserv
+  - type: private_service
     name: upload-service
     env: docker
     plan: starter
@@ -147,7 +147,7 @@ services:
       - key: LOG_LEVEL
         value: info
 
-  - type: pserv
+  - type: private_service
     name: validation-service
     env: docker
     plan: starter
@@ -163,7 +163,7 @@ services:
       - key: LOG_LEVEL
         value: info
 
-  - type: pserv
+  - type: private_service
     name: ocr-service
     env: docker
     plan: starter
@@ -187,7 +187,7 @@ services:
       - key: LOG_LEVEL
         value: info
 
-  - type: pserv
+  - type: private_service
     name: classification-service
     env: docker
     plan: starter
@@ -212,7 +212,7 @@ services:
       mountPath: /app/models
       sizeGB: 5
 
-  - type: pserv
+  - type: private_service
     name: extraction-service
     env: docker
     plan: starter
