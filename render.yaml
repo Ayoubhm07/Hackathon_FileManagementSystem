@@ -1,148 +1,92 @@
+# Render Blueprint for DocFlow (services with Dockerfiles in /services/*)
+#
+# External dependencies to configure in Render (or external providers):
+# - MongoDB (MONGO_URI)
+# - MinIO / S3-compatible storage (MINIO_*)
+# - Keycloak (KEYCLOAK_*)
+
+databases:
+  - name: airflow-postgres
+    databaseName: airflow
+    user: airflow
+
 services:
-  # -------------------------
-  # MongoDB (private) + disk
-  # -------------------------
-  - type: pserv
-    name: mongodb
-    env: docker
-    plan: starter
-    autoDeploy: true
-    dockerCommand: >
-      mongod --bind_ip_all
-    envVars:
-      - key: MONGO_INITDB_ROOT_USERNAME
-        value: docflow_admin
-      - key: MONGO_INITDB_ROOT_PASSWORD
-        sync: false
-      - key: MONGO_INITDB_DATABASE
-        value: docflow
-    disk:
-      name: mongodb-data
-      mountPath: /data/db
-      sizeGB: 5
-
-  # -------------------------
-  # MinIO (private) + disk
-  # -------------------------
-  - type: pserv
-    name: minio
-    env: docker
-    plan: starter
-    autoDeploy: true
-    image:
-      url: minio/minio:latest
-    dockerCommand: server /data --console-address ":9001"
-    envVars:
-      - key: MINIO_ROOT_USER
-        value: docflow_minio
-      - key: MINIO_ROOT_PASSWORD
-        sync: false
-    disk:
-      name: minio-data
-      mountPath: /data
-      sizeGB: 10
-
-  # -------------------------
-  # Keycloak Postgres (private) + disk
-  # -------------------------
-  - type: pserv
-    name: keycloak-postgres
-    env: docker
-    plan: starter
-    autoDeploy: true
-    image:
-      url: postgres:15-alpine
-    envVars:
-      - key: POSTGRES_USER
-        value: keycloak
-      - key: POSTGRES_PASSWORD
-        sync: false
-      - key: POSTGRES_DB
-        value: keycloak
-    disk:
-      name: keycloak-postgres-data
-      mountPath: /var/lib/postgresql/data
-      sizeGB: 5
-
-  # -------------------------
-  # Keycloak (public)
-  # -------------------------
   - type: web
-    name: keycloak
+    name: api-gateway
     env: docker
-    plan: starter
-    autoDeploy: true
-    image:
-      url: quay.io/keycloak/keycloak:23.0
-    dockerCommand: start-dev --import-realm
-    healthCheckPath: /health/ready
+    dockerfilePath: ./services/api-gateway/Dockerfile
+    dockerContext: ./services/api-gateway
+    healthCheckPath: /health
     envVars:
-      - key: KEYCLOAK_ADMIN
-        value: admin
-      - key: KEYCLOAK_ADMIN_PASSWORD
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+      - key: KEYCLOAK_URL
         sync: false
-
-      - key: KC_DB
-        value: postgres
-      - key: KC_DB_URL
-        value: jdbc:postgresql://keycloak-postgres:5432/keycloak
-      - key: KC_DB_USERNAME
-        value: keycloak
-      - key: KC_DB_PASSWORD
+      - key: KEYCLOAK_REALM
+        value: docflow
+      - key: UPLOAD_SERVICE_URL
+        value: http://upload-service:3001
+      - key: VALIDATION_SERVICE_URL
+        value: http://validation-service:3002
+      - key: AUTH_SERVICE_URL
+        value: http://auth-service:8080
+      - key: THROTTLE_TTL
+        value: "60"
+      - key: THROTTLE_LIMIT
+        value: "100"
+      - key: CORS_ORIGIN
         sync: false
-      - key: KC_HTTP_PORT
-        value: "8080"
+      - key: LOG_LEVEL
+        value: info
 
-    # NOTE IMPORT REALM/THEMES:
-    # Ton docker-compose utilisait des volumes depuis le repo vers /opt/keycloak/...
-    # Render ne permet pas ce "bind mount" du repo.
-    # Donc --import-realm ne trouvera rien tant qu’on n’a pas une image custom qui COPY ces fichiers.
-    # Pour une démo rapide: fais l'import via l'UI Keycloak (manuel) ou dis-moi et je te fais l'image custom.
-
-  # -------------------------
-  # Private backend services (from repo Dockerfiles)
-  # -------------------------
   - type: pserv
     name: auth-service
     env: docker
-    plan: starter
-    autoDeploy: true
-    rootDir: services/auth-service
+    dockerfilePath: ./services/auth-service/Dockerfile
+    dockerContext: ./services/auth-service
+    healthCheckPath: /health
     envVars:
       - key: AUTH_SERVICE_PORT
-        value: "8081"
+        value: "8080"
       - key: KEYCLOAK_URL
-        value: http://keycloak:8080
+        sync: false
       - key: KEYCLOAK_REALM
         value: docflow
       - key: KEYCLOAK_ADMIN
-        value: admin
+        sync: false
       - key: KEYCLOAK_ADMIN_PASSWORD
         sync: false
 
   - type: pserv
     name: upload-service
     env: docker
-    plan: starter
-    autoDeploy: true
-    rootDir: services/upload-service
+    dockerfilePath: ./services/upload-service/Dockerfile
+    dockerContext: ./services/upload-service
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: "3001"
       - key: MONGO_URI
-        # internal hostname "mongodb" like in compose
-        value: mongodb://docflow_admin:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/docflow?authSource=admin
+        sync: false
       - key: MINIO_ENDPOINT
-        value: minio
+        sync: false
       - key: MINIO_PORT
         value: "9000"
       - key: MINIO_USE_SSL
         value: "false"
       - key: MINIO_ACCESS_KEY
-        value: docflow_minio
+        sync: false
       - key: MINIO_SECRET_KEY
+        sync: false
+      - key: AIRFLOW_BASE_URL
+        value: http://airflow-webserver:8080
+      - key: AIRFLOW_USERNAME
+        sync: false
+      - key: AIRFLOW_PASSWORD
         sync: false
       - key: LOG_LEVEL
         value: info
@@ -150,38 +94,38 @@ services:
   - type: pserv
     name: validation-service
     env: docker
-    plan: starter
-    autoDeploy: true
-    rootDir: services/validation-service
+    dockerfilePath: ./services/validation-service/Dockerfile
+    dockerContext: ./services/validation-service
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: "3002"
       - key: MONGO_URI
-        value: mongodb://docflow_admin:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/docflow?authSource=admin
+        sync: false
       - key: LOG_LEVEL
         value: info
 
   - type: pserv
     name: ocr-service
     env: docker
-    plan: starter
-    autoDeploy: true
-    rootDir: services/ocr-service
+    dockerfilePath: ./services/ocr-service/Dockerfile
+    dockerContext: ./services/ocr-service
+    healthCheckPath: /health
     envVars:
       - key: PORT
         value: "8001"
       - key: MONGO_URI
-        value: mongodb://docflow_admin:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/docflow?authSource=admin
+        sync: false
       - key: MINIO_ENDPOINT
-        value: minio:9000
+        sync: false
       - key: MINIO_PORT
         value: "9000"
       - key: MINIO_USE_SSL
         value: "false"
       - key: MINIO_ACCESS_KEY
-        value: docflow_minio
+        sync: false
       - key: MINIO_SECRET_KEY
         sync: false
       - key: LOG_LEVEL
@@ -190,115 +134,132 @@ services:
   - type: pserv
     name: classification-service
     env: docker
-    plan: starter
-    autoDeploy: true
-    rootDir: services/classification-service
+    dockerfilePath: ./services/classification-service/Dockerfile
+    dockerContext: ./services/classification-service
+    healthCheckPath: /health
     envVars:
       - key: PORT
         value: "8002"
       - key: MINIO_ENDPOINT
-        value: minio:9000
-      - key: MINIO_USE_SSL
-        value: "false"
-      - key: MINIO_ACCESS_KEY
-        value: docflow_minio
-      - key: MINIO_SECRET_KEY
         sync: false
-      - key: LOG_LEVEL
-        value: info
-    disk:
-      # pour les modèles si besoin de persistance en démo
-      name: classification-models
-      mountPath: /app/models
-      sizeGB: 5
-
-  - type: pserv
-    name: extraction-service
-    env: docker
-    plan: starter
-    autoDeploy: true
-    rootDir: services/extraction-service
-    envVars:
-      - key: PORT
-        value: "8003"
-      - key: MONGO_URI
-        value: mongodb://docflow_admin:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/docflow?authSource=admin
-      - key: MINIO_ENDPOINT
-        value: minio:9000
       - key: MINIO_PORT
         value: "9000"
       - key: MINIO_USE_SSL
         value: "false"
       - key: MINIO_ACCESS_KEY
-        value: docflow_minio
+        sync: false
       - key: MINIO_SECRET_KEY
         sync: false
       - key: LOG_LEVEL
         value: info
 
-  # -------------------------
-  # API Gateway (public entrypoint)
-  # -------------------------
-  - type: web
-    name: api-gateway
+  - type: pserv
+    name: extraction-service
     env: docker
-    plan: starter
-    autoDeploy: true
-    rootDir: services/api-gateway
+    dockerfilePath: ./services/extraction-service/Dockerfile
+    dockerContext: ./services/extraction-service
     healthCheckPath: /health
     envVars:
-      - key: NODE_ENV
-        value: production
       - key: PORT
-        value: "3000"
-      - key: KEYCLOAK_URL
-        value: http://keycloak:8080
-      - key: KEYCLOAK_REALM
-        value: docflow
-      - key: UPLOAD_SERVICE_URL
-        value: http://upload-service:3001
-      - key: VALIDATION_SERVICE_URL
-        value: http://validation-service:3002
-      - key: AUTH_SERVICE_URL
-        value: http://auth-service:8081
-      - key: EXTRACTION_SERVICE_URL
-        value: http://extraction-service:8003
-      - key: CORS_ORIGIN
+        value: "8003"
+      - key: MONGO_URI
+        sync: false
+      - key: MINIO_ENDPOINT
+        sync: false
+      - key: MINIO_PORT
+        value: "9000"
+      - key: MINIO_USE_SSL
+        value: "false"
+      - key: MINIO_ACCESS_KEY
+        sync: false
+      - key: MINIO_SECRET_KEY
         sync: false
       - key: LOG_LEVEL
         value: info
 
-  # -------------------------
-  # Frontends (public)
-  # -------------------------
+  - type: web
+    name: airflow-webserver
+    env: docker
+    dockerfilePath: ./services/airflow-pipeline/Dockerfile
+    dockerContext: ./services/airflow-pipeline
+    dockerCommand: >-
+      bash -c "airflow db migrate && airflow users create --username ${AIRFLOW_ADMIN_USER} --password ${AIRFLOW_ADMIN_PASSWORD} --firstname Admin --lastname DocFlow --role Admin --email admin@docflow.io || true && exec airflow webserver"
+    healthCheckPath: /health
+    envVars:
+      - key: AIRFLOW__CORE__EXECUTOR
+        value: LocalExecutor
+      - key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+        fromDatabase:
+          name: airflow-postgres
+          property: connectionString
+      - key: AIRFLOW__CORE__FERNET_KEY
+        sync: false
+      - key: AIRFLOW__CORE__LOAD_EXAMPLES
+        value: "false"
+      - key: AIRFLOW__WEBSERVER__SECRET_KEY
+        sync: false
+      - key: AIRFLOW__API__AUTH_BACKENDS
+        value: airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
+      - key: OCR_SERVICE_URL
+        value: http://ocr-service:8001
+      - key: CLASSIFICATION_SERVICE_URL
+        value: http://classification-service:8002
+      - key: EXTRACTION_SERVICE_URL
+        value: http://extraction-service:8003
+      - key: VALIDATION_SERVICE_URL
+        value: http://validation-service:3002
+      - key: UPLOAD_SERVICE_URL
+        value: http://upload-service:3001
+      - key: AIRFLOW_ADMIN_USER
+        sync: false
+      - key: AIRFLOW_ADMIN_PASSWORD
+        sync: false
+      - key: _AIRFLOW_WWW_USER_CREATE
+        value: "true"
+      - key: _AIRFLOW_WWW_USER_USERNAME
+        sync: false
+      - key: _AIRFLOW_WWW_USER_PASSWORD
+        sync: false
+
+  - type: worker
+    name: airflow-scheduler
+    env: docker
+    dockerfilePath: ./services/airflow-pipeline/Dockerfile
+    dockerContext: ./services/airflow-pipeline
+    dockerCommand: >-
+      bash -c "airflow db migrate && exec airflow scheduler"
+    envVars:
+      - key: AIRFLOW__CORE__EXECUTOR
+        value: LocalExecutor
+      - key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+        fromDatabase:
+          name: airflow-postgres
+          property: connectionString
+      - key: AIRFLOW__CORE__FERNET_KEY
+        sync: false
+      - key: AIRFLOW__CORE__LOAD_EXAMPLES
+        value: "false"
+      - key: OCR_SERVICE_URL
+        value: http://ocr-service:8001
+      - key: CLASSIFICATION_SERVICE_URL
+        value: http://classification-service:8002
+      - key: EXTRACTION_SERVICE_URL
+        value: http://extraction-service:8003
+      - key: VALIDATION_SERVICE_URL
+        value: http://validation-service:3002
+      - key: UPLOAD_SERVICE_URL
+        value: http://upload-service:3001
+
   - type: web
     name: frontend-crm
     env: docker
-    plan: starter
-    autoDeploy: true
-    rootDir: services/frontend-crm
-    envVars:
-      - key: VITE_API_URL
-        sync: false
-      - key: VITE_KEYCLOAK_URL
-        sync: false
-      - key: VITE_KEYCLOAK_REALM
-        value: docflow
-      - key: VITE_KEYCLOAK_CLIENT_ID
-        value: crm-app
+    dockerfilePath: ./services/frontend-crm/Dockerfile
+    dockerContext: ./services/frontend-crm
+    healthCheckPath: /
 
   - type: web
     name: frontend-compliance
     env: docker
-    plan: starter
-    autoDeploy: true
-    rootDir: services/frontend-compliance
-    envVars:
-      - key: VITE_API_URL
-        sync: false
-      - key: VITE_KEYCLOAK_URL
-        sync: false
-      - key: VITE_KEYCLOAK_REALM
-        value: docflow
-      - key: VITE_KEYCLOAK_CLIENT_ID
-        value: compliance-app
+    dockerfilePath: ./services/frontend-compliance/Dockerfile
+    dockerContext: ./services/frontend-compliance
+    healthCheckPath: /
