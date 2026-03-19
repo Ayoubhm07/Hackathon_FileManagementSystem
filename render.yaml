@@ -46,7 +46,6 @@ services:
     env: docker
     dockerfilePath: ./services/auth-service/Dockerfile
     dockerContext: ./services/auth-service
-    healthCheckPath: /health
     envVars:
       - key: AUTH_SERVICE_PORT
         value: "8080"
@@ -64,7 +63,6 @@ services:
     env: docker
     dockerfilePath: ./services/upload-service/Dockerfile
     dockerContext: ./services/upload-service
-    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
@@ -96,7 +94,6 @@ services:
     env: docker
     dockerfilePath: ./services/validation-service/Dockerfile
     dockerContext: ./services/validation-service
-    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
@@ -112,7 +109,6 @@ services:
     env: docker
     dockerfilePath: ./services/ocr-service/Dockerfile
     dockerContext: ./services/ocr-service
-    healthCheckPath: /health
     envVars:
       - key: PORT
         value: "8001"
@@ -136,7 +132,6 @@ services:
     env: docker
     dockerfilePath: ./services/classification-service/Dockerfile
     dockerContext: ./services/classification-service
-    healthCheckPath: /health
     envVars:
       - key: PORT
         value: "8002"
@@ -158,7 +153,6 @@ services:
     env: docker
     dockerfilePath: ./services/extraction-service/Dockerfile
     dockerContext: ./services/extraction-service
-    healthCheckPath: /health
     envVars:
       - key: PORT
         value: "8003"
