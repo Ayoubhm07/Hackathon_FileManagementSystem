@@ -1,0 +1,81 @@
+# Development overrides — hot reload, source mounts
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+version: '3.8'
+
+services:
+  api-gateway:
+    build:
+      target: development
+    volumes:
+      - ./services/api-gateway/src:/app/src:ro
+    command: npm run start:dev
+    environment:
+      NODE_ENV: development
+
+  upload-service:
+    build:
+      target: development
+    volumes:
+      - ./services/upload-service/src:/app/src:ro
+    command: npm run start:dev
+    environment:
+      NODE_ENV: development
+
+  validation-service:
+    build:
+      target: development
+    volumes:
+      - ./services/validation-service/src:/app/src:ro
+    command: npm run start:dev
+    environment:
+      NODE_ENV: development
+
+  ocr-service:
+    volumes:
+      - ./services/ocr-service/app:/app/app:ro
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+    environment:
+      LOG_LEVEL: debug
+
+  classification-service:
+    volumes:
+      - ./services/classification-service/app:/app/app:ro
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
+    environment:
+      LOG_LEVEL: debug
+
+  extraction-service:
+    volumes:
+      - ./services/extraction-service/app:/app/app:ro
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8003 --reload
+    environment:
+      LOG_LEVEL: debug
+
+  airflow-webserver:
+    volumes:
+      - ./services/airflow-pipeline/dags:/opt/airflow/dags:ro
+      - airflow_logs:/opt/airflow/logs
+
+  airflow-scheduler:
+    volumes:
+      - ./services/airflow-pipeline/dags:/opt/airflow/dags:ro
+      - airflow_logs:/opt/airflow/logs
+
+  frontend-crm:
+    build:
+      target: development
+    volumes:
+      - ./services/frontend-crm/src:/app/src:ro
+    command: npm run dev -- --host 0.0.0.0
+    ports:
+      - "5173:5173"
+
+  frontend-compliance:
+    build:
+      target: development
+    volumes:
+      - ./services/frontend-compliance/src:/app/src:ro
+    command: npm run dev -- --host 0.0.0.0
+    ports:
+      - "5174:5174"
