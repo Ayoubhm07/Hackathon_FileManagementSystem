@@ -9,6 +9,8 @@ const STATUS_CONFIG = {
   PROCESSING: { label: 'En cours', color: 'text-accent bg-accent/10 border-accent/30' },
   PROCESSED:  { label: 'Traité',   color: 'text-success bg-success/10 border-success/30' },
   FAILED:     { label: 'Échec',    color: 'text-danger bg-danger/10 border-danger/30' },
+  APPROVED:   { label: 'Approuvé', color: 'text-emerald-400 bg-emerald-500/15 border-emerald-500/30' },
+  REJECTED:   { label: 'Rejeté',   color: 'text-rose-400 bg-rose-500/15 border-rose-500/30' },
 };
 export function StatusBadge({ status }: { status: string }) {
   const cfg = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG] ?? STATUS_CONFIG.UPLOADED;

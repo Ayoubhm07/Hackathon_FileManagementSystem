@@ -54,9 +54,9 @@ export function DocumentDetailPage() {
     retry: false,
   });
 
-  const { data: validation } = useQuery<{ isValid: boolean; errors: string[]; validatedAt: string }>({
+  const { data: validation } = useQuery<{ isValid: boolean; errors: { message: string }[]; validatedAt: string }>({
     queryKey: ['validation', id],
-    queryFn: async () => (await api.get(`/validation/${id}`)).data,
+    queryFn: async () => (await api.get(`/results/${id}`)).data,
     enabled: !!id,
     retry: false,
   });
@@ -177,10 +177,10 @@ export function DocumentDetailPage() {
                 </div>
                 {validation.errors?.length > 0 && (
                   <div className="space-y-1">
-                    {validation.errors.map((err: string) => (
-                      <div key={err} className="flex items-start gap-2 text-sm text-danger">
+                    {validation.errors.map((err, i) => (
+                      <div key={i} className="flex items-start gap-2 text-sm text-danger">
                         <XCircle size={13} className="mt-0.5 flex-shrink-0" />
-                        <span>{err}</span>
+                        <span>{err.message}</span>
                       </div>
                     ))}
                   </div>

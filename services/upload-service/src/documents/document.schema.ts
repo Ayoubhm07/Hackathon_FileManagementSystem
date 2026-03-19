@@ -8,6 +8,8 @@ export enum DocumentStatus {
   PROCESSING = 'PROCESSING',
   PROCESSED = 'PROCESSED',
   FAILED = 'FAILED',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
 }
 
 export type DocumentType = 'FACTURE' | 'DEVIS' | 'KBIS' | 'URSSAF' | 'RIB' | 'SIRET_ATTESTATION' | 'UNKNOWN';
