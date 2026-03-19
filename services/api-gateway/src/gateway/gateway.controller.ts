@@ -57,6 +57,12 @@ export class GatewayController {
     return this.gatewayService.proxy('GET', `${this.gatewayService.getServiceUrl('VALIDATION')}/validate/${id}`, headers);
   }
 
+  @Get('entities/:id')
+  @UseGuards(JwtGuard)
+  async getEntities(@Headers() headers: Record<string, string>, @Param('id') id: string): Promise<unknown> {
+    return this.gatewayService.proxy('GET', `${this.gatewayService.getServiceUrl('EXTRACTION')}/entities/${id}`, headers);
+  }
+
   @Post('auth/users')
   @HttpCode(HttpStatus.CREATED)
   async createUser(@Headers() headers: Record<string, string>, @Body() body: unknown): Promise<unknown> {

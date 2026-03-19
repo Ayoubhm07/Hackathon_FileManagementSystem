@@ -21,3 +21,9 @@ def upsert_entity(document_id: str, entities: dict) -> None:
         upsert=True,
     )
     logger.info("entity_upserted", document_id=document_id, matched=result.matched_count, upserted=result.upserted_id is not None)
+
+
+def get_entity(document_id: str) -> dict | None:
+    db = _get_db()
+    doc = db.extracted_entities.find_one({"documentId": document_id}, {"_id": 0})
+    return doc

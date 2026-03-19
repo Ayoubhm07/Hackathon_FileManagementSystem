@@ -1,13 +1,10 @@
 import React, { StrictMode, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import keycloak from './keycloak';
 import App from './App';
 import './index.css';
 
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 30_000, retry: 1 } },
-});
+const CRM_URL = import.meta.env.VITE_CRM_URL ?? 'http://localhost:5173';
 
 function Root() {
   const [initialized, setInitialized] = useState(false);
@@ -17,7 +14,20 @@ function Root() {
     keycloak
       .init({ onLoad: 'login-required', pkceMethod: 'S256', checkLoginIframe: false })
       .then((authenticated) => {
-        if (!authenticated) keycloak.login();
+        if (!authenticated) {
+          keycloak.login();
+          return;
+        }
+        // Redirect pure operators to the CRM frontend
+        const roles: string[] = keycloak.tokenParsed?.realm_access?.roles ?? [];
+        const isOperatorOnly =
+          roles.includes('ROLE_OPERATOR') &&
+          !roles.includes('ROLE_VALIDATOR') &&
+          !roles.includes('ROLE_ADMIN');
+        if (isOperatorOnly) {
+          window.location.replace(CRM_URL);
+          return;
+        }
         setInitialized(true);
       })
       .catch((err) => setError(err instanceof Error ? err.message : JSON.stringify(err)));
@@ -27,11 +37,7 @@ function Root() {
   if (!initialized)
     return <div className="flex h-screen items-center justify-center text-gray-500">Authentification en cours…</div>;
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  );
+  return <App />;
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

@@ -1,9 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900 font-sans;
+    @apply bg-navy text-textprimary font-sans;
+    background-image: linear-gradient(rgba(55,65,81,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(55,65,81,0.12) 1px, transparent 1px);
+    background-size: 40px 40px;
   }
 }
+
+@layer utilities {
+  .glass {
+    background: rgba(31, 41, 55, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(55, 65, 81, 0.5);
+  }
+  .shimmer {
+    background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+  .glow-purple { box-shadow: 0 0 20px rgba(139, 92, 246, 0.35); }
+  .glow-red    { box-shadow: 0 0 20px rgba(239, 68, 68, 0.35); }
+  .pulse-border-red { animation: pulse-border-red 2s ease-in-out infinite; }
+}
+
+@keyframes pulse-border-red {
+  0%, 100% { border-color: rgba(239,68,68,0.4); }
+  50%       { border-color: rgba(239,68,68,0.9); box-shadow: 0 0 12px rgba(239,68,68,0.4); }
+}
+
+.scrollbar-thin::-webkit-scrollbar { width: 4px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: #111827; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: #374151; border-radius: 2px; }

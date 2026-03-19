@@ -177,10 +177,13 @@ def _extract_urssaf_fields(text: str, entities: dict[str, Any]) -> None:
 
 
 def _extract_kbis_fields(text: str, entities: dict[str, Any]) -> None:
-    # RCS number
-    rcs_match = re.search(r"RCS\s+([A-Z]+\s+[A-Z]\s*\d{3}\s*\d{3}\s*\d{3})", text)
+    # RCS number — handles "RCS Paris B 123 456 789" and "RCS Paris 123 456 789"
+    rcs_match = re.search(
+        r"RCS\s+[A-Za-zÀ-ÿ\s\-]+?\s+(?:[A-Z]\s+)?(\d{3}[\s]?\d{3}[\s]?\d{3})\b",
+        text,
+    )
     if rcs_match:
-        entities["registrationNumber"] = rcs_match.group(1).strip()
+        entities["registrationNumber"] = re.sub(r"\s", "", rcs_match.group(1))
 
     # Court
     court_match = re.search(r"[Gg]reffe\s+(?:du\s+[Tt]ribunal\s+)?(?:de\s+)?([A-Z][a-z\-]+(?:\s+[A-Z][a-z\-]+)*)", text)

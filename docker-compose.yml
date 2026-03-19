@@ -114,6 +114,7 @@ services:
       - "8080:8080"
     volumes:
       - ./services/auth-service/keycloak:/opt/keycloak/data/import:ro
+      - ./services/auth-service/keycloak/themes:/opt/keycloak/themes:ro
     networks:
       - docflow-network
     depends_on:
@@ -166,7 +167,7 @@ services:
       NODE_ENV: ${NODE_ENV:-production}
       PORT: 3001
       MONGO_URI: ${MONGO_URI}
-      MINIO_ENDPOINT: minio:9000
+      MINIO_ENDPOINT: minio
       MINIO_PORT: 9000
       MINIO_USE_SSL: "false"
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
@@ -260,6 +261,8 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
       MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       LOG_LEVEL: ${LOG_LEVEL:-info}
+    volumes:
+      - ./services/classification-service/models:/app/models:rw
     networks:
       - docflow-network
     healthcheck:
@@ -316,6 +319,7 @@ services:
       UPLOAD_SERVICE_URL: http://upload-service:3001
       VALIDATION_SERVICE_URL: http://validation-service:3002
       AUTH_SERVICE_URL: http://auth-service:8081
+      EXTRACTION_SERVICE_URL: http://extraction-service:8003
       THROTTLE_TTL: 60
       THROTTLE_LIMIT: 100
       CORS_ORIGIN: ${CORS_ORIGIN}

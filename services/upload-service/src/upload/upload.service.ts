@@ -43,7 +43,7 @@ export class UploadService {
     await this.documentsService.updateStatus(docId, DocumentStatus.PROCESSING, 'upload-service');
 
     this.airflowService
-      .triggerPipeline(docId, storagePath, input.correlationId)
+      .triggerPipeline(docId, storagePath, input.mimetype, input.correlationId)
       .catch((err: unknown) =>
         this.logger.error(`Failed to trigger Airflow: ${err instanceof Error ? err.message : String(err)}`),
       );

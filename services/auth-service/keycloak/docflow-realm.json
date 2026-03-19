@@ -31,9 +31,17 @@
       "publicClient": true,
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
-      "attributes": { "pkce.code.challenge.method": "S256" },
-      "redirectUris": ["http://localhost:5173/*", "http://frontend-crm:5173/*"],
-      "webOrigins": ["http://localhost:5173", "http://frontend-crm:5173"]
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "redirectUris": [
+        "http://localhost:5173/*",
+        "http://frontend-crm:5173/*"
+      ],
+      "webOrigins": [
+        "http://localhost:5173",
+        "http://frontend-crm:5173"
+      ]
     },
     {
       "clientId": "compliance-app",
@@ -42,16 +50,33 @@
       "publicClient": true,
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
-      "attributes": { "pkce.code.challenge.method": "S256" },
-      "redirectUris": ["http://localhost:5174/*", "http://frontend-compliance:5174/*"],
-      "webOrigins": ["http://localhost:5174", "http://frontend-compliance:5174"]
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "redirectUris": [
+        "http://localhost:5174/*",
+        "http://frontend-compliance:5174/*"
+      ],
+      "webOrigins": [
+        "http://localhost:5174",
+        "http://frontend-compliance:5174"
+      ]
     }
   ],
   "roles": {
     "realm": [
-      { "name": "ROLE_OPERATOR", "description": "Can upload documents and view own submissions" },
-      { "name": "ROLE_VALIDATOR", "description": "Can validate documents and view all submissions" },
-      { "name": "ROLE_ADMIN", "description": "Full access including user management" }
+      {
+        "name": "ROLE_OPERATOR",
+        "description": "Can upload documents and view own submissions"
+      },
+      {
+        "name": "ROLE_VALIDATOR",
+        "description": "Can validate documents and view all submissions"
+      },
+      {
+        "name": "ROLE_ADMIN",
+        "description": "Full access including user management"
+      }
     ]
   },
   "users": [
@@ -62,8 +87,16 @@
       "lastName": "Operator",
       "enabled": true,
       "emailVerified": true,
-      "credentials": [{ "type": "password", "value": "operator123", "temporary": false }],
-      "realmRoles": ["ROLE_OPERATOR"]
+      "credentials": [
+        {
+          "type": "password",
+          "value": "operator123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ROLE_OPERATOR"
+      ]
     },
     {
       "username": "validator@docflow.io",
@@ -72,8 +105,16 @@
       "lastName": "Validator",
       "enabled": true,
       "emailVerified": true,
-      "credentials": [{ "type": "password", "value": "validator123", "temporary": false }],
-      "realmRoles": ["ROLE_VALIDATOR"]
+      "credentials": [
+        {
+          "type": "password",
+          "value": "validator123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ROLE_VALIDATOR"
+      ]
     },
     {
       "username": "admin@docflow.io",
@@ -82,8 +123,20 @@
       "lastName": "Admin",
       "enabled": true,
       "emailVerified": true,
-      "credentials": [{ "type": "password", "value": "admin123", "temporary": false }],
-      "realmRoles": ["ROLE_ADMIN", "ROLE_VALIDATOR", "ROLE_OPERATOR"]
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ROLE_ADMIN",
+        "ROLE_VALIDATOR",
+        "ROLE_OPERATOR"
+      ]
     }
-  ]
+  ],
+  "loginTheme": "docflow",
+  "accountTheme": "docflow"
 }

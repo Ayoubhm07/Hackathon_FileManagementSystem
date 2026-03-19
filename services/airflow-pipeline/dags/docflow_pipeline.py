@@ -161,22 +161,30 @@ with DAG(
 
         return result
 
-    # ── Task 5: Notify (update status to PROCESSED) ────────────────────────
+    # ── Task 5: Notify (update status to PROCESSED + persist documentType) ─
     def notify_task_fn(**context):
         params = context["params"]
         doc_id = params["document_id"]
+        ti = context["task_instance"]
 
-        log.info("[%s] Marking document %s as PROCESSED", params.get("correlation_id"), doc_id)
+        document_type = ti.xcom_pull(task_ids="classification_task", key="document_type")
+
+        log.info("[%s] Marking document %s as PROCESSED (type=%s)",
+                 params.get("correlation_id"), doc_id, document_type)
+
+        payload: dict = {"status": "PROCESSED", "updatedBy": "airflow-pipeline"}
+        if document_type:
+            payload["documentType"] = document_type
 
         resp = httpx.patch(
             f"{UPLOAD_URL}/{doc_id}/status",
-            json={"status": "PROCESSED", "updatedBy": "airflow-pipeline"},
+            json=payload,
             headers=_headers(context),
             timeout=30,
         )
         resp.raise_for_status()
         log.info("[%s] Document %s marked PROCESSED", params.get("correlation_id"), doc_id)
-        return {"document_id": doc_id, "status": "PROCESSED"}
+        return {"document_id": doc_id, "status": "PROCESSED", "documentType": document_type}
 
     # ── Wire up tasks ──────────────────────────────────────────────────────
     t_ocr = PythonOperator(task_id="ocr_task", python_callable=ocr_task_fn)

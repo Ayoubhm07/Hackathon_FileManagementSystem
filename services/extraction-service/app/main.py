@@ -37,6 +37,17 @@ def health() -> dict:
     return {"status": "ok", "service": "extraction-service"}
 
 
+@app.get("/entities/{document_id}")
+def get_entities(document_id: str) -> dict:
+    log = logger.bind(document_id=document_id)
+    doc = mongo_client.get_entity(document_id)
+    if doc is None:
+        log.warning("entities_not_found", document_id=document_id)
+        raise HTTPException(status_code=404, detail=f"No entities found for document {document_id}")
+    log.info("entities_fetched", document_id=document_id)
+    return doc
+
+
 @app.post("/extract", response_model=ExtractResponse)
 def extract_entities(req: ExtractRequest) -> ExtractResponse:
     log = logger.bind(document_id=req.document_id, correlation_id=req.correlation_id)
