@@ -12,16 +12,12 @@
 </head>
 <body>
 
-  <!-- 3D Canvas Background -->
   <canvas id="neural-canvas"></canvas>
-
-  <!-- Noise overlay -->
   <div class="noise-overlay"></div>
 
-  <!-- Main layout -->
   <div class="login-layout">
 
-    <!-- Left: 3D Hero -->
+    <!-- Left: Hero -->
     <div class="hero-side">
       <div class="hero-content">
         <div class="brand-badge">
@@ -52,7 +48,6 @@
     <div class="form-side">
       <div class="form-card" id="form-card">
 
-        <!-- Logo -->
         <div class="form-logo">
           <div class="logo-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -78,6 +73,39 @@
           </div>
         </#if>
 
+        <!-- Google SSO -->
+        <#assign googleUrl="">
+        <#if social?? && social.providers?has_content>
+          <#list social.providers as p>
+            <#if p.alias == "google"><#assign googleUrl = p.loginUrl></#if>
+          </#list>
+        </#if>
+
+        <#if googleUrl?has_content>
+          <a href="${googleUrl}" class="social-btn social-google">
+            <svg width="18" height="18" viewBox="0 0 48 48">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            </svg>
+            Continuer avec Google
+          </a>
+        <#else>
+          <button type="button" class="social-btn social-google social-disabled" id="google-demo-btn">
+            <svg width="18" height="18" viewBox="0 0 48 48">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            </svg>
+            Continuer avec Google
+            <span class="social-soon">Soon</span>
+          </button>
+        </#if>
+
+        <div class="social-divider"><span>ou</span></div>
+
         <form id="kc-form-login" action="${url.loginAction}" method="post">
 
           <div class="field-group">
@@ -97,7 +125,6 @@
                 <#elseif !realm.registrationEmailAsUsername>Email ou nom d'utilisateur
                 <#else>Adresse email</#if>
               </label>
-              <div class="field-border"></div>
             </div>
           </div>
 
@@ -112,7 +139,6 @@
                 placeholder=" "
               />
               <label for="password" class="field-label">Mot de passe</label>
-              <div class="field-border"></div>
               <button type="button" class="eye-toggle" id="eye-toggle" aria-label="Afficher le mot de passe">
                 <svg id="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
@@ -148,6 +174,7 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="spin">
                 <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               </svg>
+              Connexion…
             </span>
             <div class="btn-ripple" id="btn-ripple"></div>
           </button>
@@ -155,9 +182,9 @@
         </form>
 
         <#if realm.registrationAllowed?? && realm.registrationAllowed>
-          <p class="register-text">
+          <p class="auth-switch-text">
             Pas encore de compte ?
-            <a href="${url.registrationUrl}" class="register-link">Créer un compte</a>
+            <a href="${url.registrationUrl}" class="auth-switch-link">Créer un compte</a>
           </p>
         </#if>
 
@@ -180,12 +207,14 @@
     const pwdInput = document.getElementById('password');
     const eyeOpen = document.getElementById('eye-open');
     const eyeClosed = document.getElementById('eye-closed');
-    toggle.addEventListener('click', () => {
-      const isHidden = pwdInput.type === 'password';
-      pwdInput.type = isHidden ? 'text' : 'password';
-      eyeOpen.style.display = isHidden ? 'none' : 'block';
-      eyeClosed.style.display = isHidden ? 'block' : 'none';
-    });
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        const isHidden = pwdInput.type === 'password';
+        pwdInput.type = isHidden ? 'text' : 'password';
+        eyeOpen.style.display = isHidden ? 'none' : 'block';
+        eyeClosed.style.display = isHidden ? 'block' : 'none';
+      });
+    }
 
     // Submit loading state + ripple
     const form = document.getElementById('kc-form-login');
@@ -206,12 +235,21 @@
       btn.disabled = true;
     });
 
+    // Google demo button tooltip
+    const googleDemoBtn = document.getElementById('google-demo-btn');
+    if (googleDemoBtn) {
+      googleDemoBtn.addEventListener('click', () => {
+        googleDemoBtn.classList.add('social-shake');
+        setTimeout(() => googleDemoBtn.classList.remove('social-shake'), 500);
+      });
+    }
+
     // Card entrance animation
     const card = document.getElementById('form-card');
     card.style.opacity = '0';
-    card.style.transform = 'translateY(24px)';
+    card.style.transform = 'translateY(28px)';
     requestAnimationFrame(() => {
-      card.style.transition = 'opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)';
+      card.style.transition = 'opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1)';
       card.style.opacity = '1';
       card.style.transform = 'translateY(0)';
     });

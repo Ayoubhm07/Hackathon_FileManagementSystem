@@ -127,6 +127,25 @@ services:
       retries: 10
       start_period: 90s
 
+  # ─── Service Discovery ─────────────────────────────────────────────────────
+
+  eureka-server:
+    build:
+      context: ./services/eureka-server
+      dockerfile: Dockerfile
+    container_name: docflow-eureka-server
+    restart: unless-stopped
+    ports:
+      - "8761:8761"
+    networks:
+      - docflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8761/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
   # ─── Backend Services ──────────────────────────────────────────────────────
 
   auth-service:
@@ -143,10 +162,13 @@ services:
       KEYCLOAK_REALM: ${KEYCLOAK_REALM}
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      EUREKA_URL: http://eureka-server:8761/eureka/
     networks:
       - docflow-network
     depends_on:
       keycloak:
+        condition: service_healthy
+      eureka-server:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
@@ -176,6 +198,7 @@ services:
       AIRFLOW_USERNAME: ${AIRFLOW_ADMIN_USER}
       AIRFLOW_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD}
       LOG_LEVEL: ${LOG_LEVEL:-info}
+      EUREKA_URL: http://eureka-server:8761/eureka
     networks:
       - docflow-network
     depends_on:
@@ -203,6 +226,7 @@ services:
       PORT: 3002
       MONGO_URI: ${MONGO_URI}
       LOG_LEVEL: ${LOG_LEVEL:-info}
+      EUREKA_URL: http://eureka-server:8761/eureka
     networks:
       - docflow-network
     depends_on:
@@ -324,6 +348,7 @@ services:
       THROTTLE_LIMIT: 100
       CORS_ORIGIN: ${CORS_ORIGIN}
       LOG_LEVEL: ${LOG_LEVEL:-info}
+      EUREKA_URL: http://eureka-server:8761/eureka
     networks:
       - docflow-network
     depends_on:

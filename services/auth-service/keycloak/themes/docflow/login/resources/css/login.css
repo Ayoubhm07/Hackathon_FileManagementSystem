@@ -496,6 +496,327 @@ html, body {
   letter-spacing: 0.02em;
 }
 
+/* ── Social login ────────────────────────────────────────────────────────────── */
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.25s, background 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+.social-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.social-google {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.social-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.social-disabled:hover {
+  transform: none;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+
+.social-soon {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: auto;
+}
+
+@keyframes social-shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-4px); }
+  40%       { transform: translateX(4px); }
+  60%       { transform: translateX(-3px); }
+  80%       { transform: translateX(3px); }
+}
+.social-shake { animation: social-shake 0.4s ease; }
+
+/* ── Social divider ──────────────────────────────────────────────────────────── */
+.social-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 1.25rem 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.social-divider::before,
+.social-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+}
+
+/* ── Auth switch text ────────────────────────────────────────────────────────── */
+.auth-switch-text {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.auth-switch-link {
+  color: var(--indigo);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.auth-switch-link:hover { color: var(--cyan); }
+
+.auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.auth-back-link:hover { color: var(--white); }
+
+/* ── Register: name row ──────────────────────────────────────────────────────── */
+.name-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.875rem;
+}
+
+/* ── Register card (taller) ──────────────────────────────────────────────────── */
+.form-card--register {
+  max-height: 96vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99,102,241,0.3) transparent;
+}
+.form-card--register::-webkit-scrollbar { width: 4px; }
+.form-card--register::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 2px; }
+
+/* ── Password strength ───────────────────────────────────────────────────────── */
+.pwd-strength {
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.pwd-strength-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: 2px;
+  transition: width 0.4s cubic-bezier(0.16,1,0.3,1), background 0.3s;
+}
+
+.pwd-hint {
+  font-size: 11px;
+  margin-top: 4px;
+  height: 14px;
+  transition: color 0.3s;
+}
+
+.pwd-match {
+  font-size: 11px;
+  margin-top: 4px;
+  height: 14px;
+  transition: color 0.3s;
+}
+
+/* ── Page icon (for reset/update/info pages) ─────────────────────────────────── */
+.page-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.page-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-icon--indigo {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--indigo);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  box-shadow: 0 0 32px rgba(99, 102, 241, 0.15);
+}
+
+.page-icon--success {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34D399;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 32px rgba(16, 185, 129, 0.15);
+}
+
+.page-icon--error {
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--error);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  box-shadow: 0 0 32px rgba(248, 113, 113, 0.12);
+}
+
+/* ── Info steps (forgot password hero) ──────────────────────────────────────── */
+.info-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 2rem;
+}
+
+.info-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.info-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: var(--indigo);
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.info-step-connector {
+  width: 1px;
+  height: 20px;
+  background: rgba(99, 102, 241, 0.2);
+  margin-left: 13px;
+}
+
+/* ── Password tips (update password hero) ────────────────────────────────────── */
+.pwd-tips {
+  margin-top: 2rem;
+}
+
+.pwd-tips-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.875rem;
+}
+
+.pwd-tip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.pwd-tip-check {
+  color: var(--cyan);
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+/* ── Feature list (register hero) ───────────────────────────────────────────── */
+.feature-list {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.feature-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.feature-dot--indigo {
+  background: var(--indigo);
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.6);
+}
+
+.feature-dot--cyan {
+  background: var(--cyan);
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.6);
+}
+
+.feature-dot--violet {
+  background: var(--violet);
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+}
+
+/* ── Info page ───────────────────────────────────────────────────────────────── */
+.info-card {
+  text-align: center;
+}
+
+.info-message {
+  font-size: 0.9375rem;
+  color: var(--muted);
+  line-height: 1.65;
+  text-align: center;
+  margin-top: 0.75rem;
+}
+
+.info-title--success {
+  background: linear-gradient(135deg, #34D399, var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* ── Mobile ──────────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .login-layout { grid-template-columns: 1fr; }
@@ -508,4 +829,5 @@ html, body {
     padding-top: 4rem;
   }
   html, body { overflow: auto; }
+  .name-row { grid-template-columns: 1fr; }
 }
