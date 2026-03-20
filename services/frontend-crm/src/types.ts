@@ -45,6 +45,18 @@ export interface ExtractedEntities {
   rawEntities?: { orgs: string[]; locations: string[] };
 }
 
+export interface Notification {
+  _id: string;
+  userId: string;
+  documentId: string;
+  filename: string;
+  decision: 'APPROVED' | 'REJECTED';
+  validatorName: string;
+  read: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 export interface Document {
   _id: string;
   filename: string;

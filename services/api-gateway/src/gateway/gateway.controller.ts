@@ -3,6 +3,7 @@ import {
   Headers, Query, UseGuards, HttpCode, HttpStatus, Req,
   InternalServerErrorException,
 } from '@nestjs/common';
+
 import { JwtGuard } from '../auth/jwt.guard';
 import { GatewayService } from './gateway.service';
 import * as FormData from 'form-data';
@@ -89,5 +90,70 @@ export class GatewayController {
   @UseGuards(JwtGuard)
   async getUser(@Headers() headers: Record<string, string>, @Param('id') id: string): Promise<unknown> {
     return this.gatewayService.proxy('GET', `${this.gatewayService.getServiceUrl('AUTH')}/auth/users/${id}`, headers);
+  }
+
+  // ── Human validation decision (triggers Kafka → notification) ─────────────
+
+  @Post('decisions/:documentId')
+  @UseGuards(JwtGuard)
+  @HttpCode(HttpStatus.OK)
+  async humanDecide(
+    @Headers() headers: Record<string, string>,
+    @Param('documentId') documentId: string,
+    @Body() body: unknown,
+  ): Promise<unknown> {
+    return this.gatewayService.proxy(
+      'POST',
+      `${this.gatewayService.getServiceUrl('VALIDATION')}/validate/${documentId}`,
+      headers,
+      body,
+    );
+  }
+
+  // ── Notification endpoints ─────────────────────────────────────────────────
+
+  @Get('notifications')
+  @UseGuards(JwtGuard)
+  async getNotifications(
+    @Headers() headers: Record<string, string>,
+    @Query('userId') userId?: string,
+  ): Promise<unknown> {
+    const params = userId ? `?userId=${userId}` : '';
+    return this.gatewayService.proxy(
+      'GET',
+      `${this.gatewayService.getServiceUrl('NOTIFICATION')}/notifications${params}`,
+      headers,
+    );
+  }
+
+  @Patch('notifications/read-all')
+  @UseGuards(JwtGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async markAllRead(
+    @Headers() headers: Record<string, string>,
+    @Query('userId') userId?: string,
+  ): Promise<unknown> {
+    const params = userId ? `?userId=${userId}` : '';
+    return this.gatewayService.proxy(
+      'PATCH',
+      `${this.gatewayService.getServiceUrl('NOTIFICATION')}/notifications/read-all${params}`,
+      headers,
+    );
+  }
+
+  @Patch('notifications/:id/read')
+  @UseGuards(JwtGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async markRead(
+    @Headers() headers: Record<string, string>,
+    @Param('id') id: string,
+    @Query('userId') userId?: string,
+  ): Promise<unknown> {
+    const params = userId ? `?userId=${userId}` : '';
+    return this.gatewayService.proxy(
+      'PATCH',
+      `${this.gatewayService.getServiceUrl('NOTIFICATION')}/notifications/${id}/read${params}`,
+      headers,
+    );
   }
 }

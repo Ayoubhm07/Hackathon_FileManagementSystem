@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ExtractedEntity, ExtractedEntityDocument } from '../schemas/extracted-entity.schema';
 import { ValidationResult, ValidationResultDocument, ValidationError } from '../schemas/validation-result.schema';
+import { DocflowDocument, DocflowDocumentDocument } from '../schemas/document.schema';
+import { KafkaProducerService } from './kafka-producer.service';
 
 const VALIDATOR_VERSION = '1.0.0';
 
@@ -25,6 +27,9 @@ export class ValidationService {
     private readonly entityModel: Model<ExtractedEntityDocument>,
     @InjectModel(ValidationResult.name)
     private readonly resultModel: Model<ValidationResultDocument>,
+    @InjectModel(DocflowDocument.name)
+    private readonly documentModel: Model<DocflowDocumentDocument>,
+    private readonly kafkaProducer: KafkaProducerService,
   ) {}
 
   async validate(documentId: string, correlationId?: string): Promise<ValidationResult> {
@@ -78,6 +83,45 @@ export class ValidationService {
       throw new NotFoundException(`No validation result found for document ${documentId}`);
     }
     return result;
+  }
+
+  async humanDecide(
+    documentId: string,
+    decision: 'APPROVED' | 'REJECTED',
+    validatorName: string,
+  ): Promise<{ documentId: string; decision: string; status: string }> {
+    const doc = await this.documentModel.findById(documentId).lean();
+    if (!doc) {
+      throw new NotFoundException(`Document ${documentId} not found`);
+    }
+
+    await this.documentModel.findByIdAndUpdate(documentId, { $set: { status: decision } });
+    this.logger.log(`Document ${documentId} status set to ${decision} by ${validatorName}`);
+
+    // Direct HTTP call to notification-service (Kafka fallback)
+    const notifUrl = process.env['NOTIFICATION_SERVICE_URL'] ?? 'http://notification-service:3003';
+    fetch(`${notifUrl}/notifications/internal`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        documentId,
+        filename: doc.originalName ?? documentId,
+        decision,
+        validatorName,
+        operatorId: doc.userId ?? 'unknown',
+      }),
+    }).catch((err: Error) => this.logger.warn(`Notification HTTP call failed: ${err.message}`));
+
+    // Also try Kafka (no-op if not connected)
+    this.kafkaProducer.publish('document.validated', {
+      documentId,
+      filename: doc.originalName ?? documentId,
+      decision,
+      validatorName,
+      operatorId: doc.userId ?? 'unknown',
+    }).catch(() => {});
+
+    return { documentId, decision, status: 'published' };
   }
 
   // ── Private validators ──────────────────────────────────────────────────────

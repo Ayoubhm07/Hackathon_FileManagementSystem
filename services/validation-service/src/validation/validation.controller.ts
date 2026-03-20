@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Body, Param, Headers, Logger } from '@nestjs/common';
 import { ValidationService } from './validation.service';
-import { ValidateDocumentDto, ValidateBatchDto } from './dto/validate.dto';
+import { ValidateDocumentDto, ValidateBatchDto, HumanDecisionDto } from './dto/validate.dto';
 
 @Controller()
 export class ValidationController {
@@ -27,5 +27,15 @@ export class ValidationController {
   @Get('validate/:documentId')
   async getResult(@Param('documentId') documentId: string) {
     return this.validationService.getResult(documentId);
+  }
+
+  @Post('validate/:documentId')
+  async humanDecide(
+    @Param('documentId') documentId: string,
+    @Body() dto: HumanDecisionDto,
+    @Headers('x-user-name') validatorHeader?: string,
+  ) {
+    const validatorName = dto.validatorName ?? validatorHeader ?? 'Validateur';
+    return this.validationService.humanDecide(documentId, dto.decision, validatorName);
   }
 }

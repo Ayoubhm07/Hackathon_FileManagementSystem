@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsArray } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsArray, IsEnum } from 'class-validator';
 
 export class ValidateDocumentDto {
   @IsString()
@@ -18,4 +18,13 @@ export class ValidateBatchDto {
   @IsString()
   @IsOptional()
   correlationId?: string;
+}
+
+export class HumanDecisionDto {
+  @IsEnum(['APPROVED', 'REJECTED'])
+  decision!: 'APPROVED' | 'REJECTED';
+
+  @IsString()
+  @IsOptional()
+  validatorName?: string;
 }

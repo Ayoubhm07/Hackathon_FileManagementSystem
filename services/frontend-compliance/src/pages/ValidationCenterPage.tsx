@@ -7,6 +7,7 @@ import { ValidationResultPanel } from '../components/ValidationResultPanel';
 import { EntitiesPanel } from '../components/EntitiesPanel';
 import type { Document, PaginatedDocuments } from '../types';
 import api from '../api';
+import keycloak from '../keycloak';
 
 export function ValidationCenterPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -22,10 +23,12 @@ export function ValidationCenterPage() {
   const processedDocs = documents.filter(d => ['PROCESSED', 'APPROVED', 'REJECTED'].includes(d.status));
   const selectedDoc = documents.find(d => d._id === selectedId);
 
-  async function updateStatus(id: string, status: 'APPROVED' | 'REJECTED') {
-    setPending(id + status);
+  const validatorName = keycloak.tokenParsed?.preferred_username ?? 'Validateur';
+
+  async function updateStatus(id: string, decision: 'APPROVED' | 'REJECTED') {
+    setPending(id + decision);
     try {
-      await api.patch(`/documents/${id}/status`, { status });
+      await api.post(`/decisions/${id}`, { decision, validatorName });
       await queryClient.invalidateQueries({ queryKey: ['documents'] });
     } finally {
       setPending(null);

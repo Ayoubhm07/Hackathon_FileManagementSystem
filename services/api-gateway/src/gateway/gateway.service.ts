@@ -66,12 +66,13 @@ export class GatewayService {
     }
   }
 
-  getServiceUrl(service: 'UPLOAD' | 'VALIDATION' | 'AUTH' | 'EXTRACTION'): string {
+  getServiceUrl(service: 'UPLOAD' | 'VALIDATION' | 'AUTH' | 'EXTRACTION' | 'NOTIFICATION'): string {
     const map: Record<string, string> = {
       UPLOAD: this.configService.getOrThrow<string>('UPLOAD_SERVICE_URL'),
       VALIDATION: this.configService.getOrThrow<string>('VALIDATION_SERVICE_URL'),
       AUTH: this.configService.getOrThrow<string>('AUTH_SERVICE_URL'),
       EXTRACTION: this.configService.getOrThrow<string>('EXTRACTION_SERVICE_URL'),
+      NOTIFICATION: this.configService.get<string>('NOTIFICATION_SERVICE_URL', 'http://notification-service:3003'),
     };
     return map[service];
   }

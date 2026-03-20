@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { ArrowLeft, CheckCircle, XCircle, ShieldCheck, Loader2 } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { StatusBadge, DocTypeIcon, getDocTypeLabel, Card, PageHeader } from '../components/ui';
 import type { Document } from '../types';
 import api from '../api';
+import keycloak from '../keycloak';
 
 const ENTITY_LABELS: Record<string, string> = {
   documentType:         'Type de document',
@@ -40,6 +41,23 @@ const IGNORE_KEYS = new Set(['documentId', 'rawEntities', '__v', '_id']);
 export function DocumentDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [deciding, setDeciding] = useState<'APPROVED' | 'REJECTED' | null>(null);
+
+  const validatorName = keycloak.tokenParsed?.preferred_username ?? 'Validateur';
+
+  async function decide(decision: 'APPROVED' | 'REJECTED') {
+    if (!id) return;
+    setDeciding(decision);
+    try {
+      await api.post(`/decisions/${id}`, { decision, validatorName });
+      await queryClient.invalidateQueries({ queryKey: ['document', id] });
+    } catch {
+      // silent — backend may be unavailable during demo
+    } finally {
+      setDeciding(null);
+    }
+  }
 
   const { data: doc, isLoading: docLoading } = useQuery<Document>({
     queryKey: ['document', id],
@@ -195,6 +213,73 @@ export function DocumentDetailPage() {
               </p>
             )}
           </Card>
+
+          {/* Validator action card */}
+          {(doc.status === 'PROCESSED' || doc.status === 'APPROVED' || doc.status === 'REJECTED') && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-2xl p-5 border"
+              style={{
+                background: doc.status === 'APPROVED'
+                  ? 'linear-gradient(135deg, rgba(16,185,129,0.08) 0%, rgba(16,185,129,0.03) 100%)'
+                  : doc.status === 'REJECTED'
+                  ? 'linear-gradient(135deg, rgba(239,68,68,0.08) 0%, rgba(239,68,68,0.03) 100%)'
+                  : 'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0.03) 100%)',
+                borderColor: doc.status === 'APPROVED'
+                  ? 'rgba(16,185,129,0.25)'
+                  : doc.status === 'REJECTED'
+                  ? 'rgba(239,68,68,0.25)'
+                  : 'rgba(59,130,246,0.2)',
+              }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <ShieldCheck size={16} className="text-primary" />
+                <h3 className="text-sm font-semibold text-textprimary">Décision du validateur</h3>
+              </div>
+
+              {doc.status === 'APPROVED' && (
+                <div className="flex items-center gap-3 py-2">
+                  <CheckCircle size={22} className="text-emerald-400" />
+                  <span className="font-semibold text-emerald-400">Document approuvé</span>
+                </div>
+              )}
+              {doc.status === 'REJECTED' && (
+                <div className="flex items-center gap-3 py-2">
+                  <XCircle size={22} className="text-red-400" />
+                  <span className="font-semibold text-red-400">Document rejeté</span>
+                </div>
+              )}
+              {doc.status === 'PROCESSED' && (
+                <div className="flex gap-3">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    disabled={!!deciding}
+                    onClick={() => decide('APPROVED')}
+                    className="flex-1 py-3 flex items-center justify-center gap-2 rounded-xl text-sm font-semibold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 transition-colors disabled:opacity-50"
+                  >
+                    {deciding === 'APPROVED'
+                      ? <Loader2 size={16} className="animate-spin" />
+                      : <CheckCircle size={16} />}
+                    Approuver
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    disabled={!!deciding}
+                    onClick={() => decide('REJECTED')}
+                    className="flex-1 py-3 flex items-center justify-center gap-2 rounded-xl text-sm font-semibold bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 transition-colors disabled:opacity-50"
+                  >
+                    {deciding === 'REJECTED'
+                      ? <Loader2 size={16} className="animate-spin" />
+                      : <XCircle size={16} />}
+                    Rejeter
+                  </motion.button>
+                </div>
+              )}
+            </motion.div>
+          )}
         </div>
       </div>
     </div>

@@ -6,6 +6,9 @@ import {
   ChevronLeft, ChevronRight, Bell, Search, LogOut,
 } from 'lucide-react';
 import keycloak from '../keycloak';
+import { useNotifications } from '../hooks/useNotifications';
+import { NotificationPanel } from './NotificationPanel';
+import { ToastNotification } from './ToastNotification';
 
 const NAV_ITEMS = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Tableau de bord' },
@@ -32,10 +35,12 @@ function getTransition(pathname: string) {
 
 export function Layout() {
   const [collapsed, setCollapsed] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
   const location = useLocation();
   const username = keycloak.tokenParsed?.preferred_username ?? 'Utilisateur';
   const initials = username.slice(0, 2).toUpperCase();
   const trans = getTransition(location.pathname);
+  const { notifications, unreadCount, pendingToast, markAsRead, markAllAsRead, clearToast } = useNotifications();
 
   return (
     <div className="flex h-screen overflow-hidden bg-navy">
@@ -163,7 +168,7 @@ export function Layout() {
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top bar */}
-        <header className="h-16 flex items-center gap-4 px-6 bg-slate/50 border-b border-border backdrop-blur-sm flex-shrink-0">
+        <header className="h-16 flex items-center gap-4 px-6 bg-slate/50 border-b border-border backdrop-blur-sm flex-shrink-0 z-30 relative">
           <div className="flex-1 relative max-w-md">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-textsecondary pointer-events-none" />
             <input
@@ -172,18 +177,42 @@ export function Layout() {
               className="w-full pl-9 pr-4 py-2 bg-navy/60 border border-border rounded-lg text-sm text-textprimary placeholder-textsecondary focus:outline-none focus:border-primary/50 focus:bg-primary/5 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.12)] transition-all duration-200"
             />
           </div>
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="relative p-2 text-textsecondary hover:text-textprimary transition-colors"
-          >
-            <Bell size={18} />
-            <motion.span
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-              className="absolute top-1.5 right-1.5 w-2 h-2 bg-danger rounded-full"
-            />
-          </motion.button>
+          <div className="relative z-[200]">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setPanelOpen(o => !o)}
+              className="relative p-2 text-textsecondary hover:text-textprimary transition-colors"
+            >
+              <motion.div
+                animate={unreadCount > 0 ? { rotate: [0, -12, 12, -8, 8, 0] } : {}}
+                transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 4 }}
+              >
+                <Bell size={18} />
+              </motion.div>
+              {unreadCount > 0 && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-danger text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1"
+                >
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </motion.span>
+              )}
+            </motion.button>
+            <AnimatePresence>
+              {panelOpen && (
+                <NotificationPanel
+                  notifications={notifications}
+                  unreadCount={unreadCount}
+                  onMarkAsRead={markAsRead}
+                  onMarkAllAsRead={markAllAsRead}
+                  onClose={() => setPanelOpen(false)}
+                />
+              )}
+            </AnimatePresence>
+          </div>
+          <ToastNotification notification={pendingToast} onDismiss={clearToast} />
           <motion.div
             whileHover={{ scale: 1.05 }}
             className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-purple flex items-center justify-center text-white text-xs font-bold cursor-pointer"
