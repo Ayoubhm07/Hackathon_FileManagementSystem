@@ -1,4 +1,2 @@
-generated/
-.test_artifacts/
 __pycache__/
 *.pyc

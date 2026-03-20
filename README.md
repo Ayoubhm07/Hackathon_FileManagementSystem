@@ -1,34 +1,29 @@
-# Hackathon Dataset Toolkit
+# Hackathon Dataset Corpus
 
-Toolkit Python pour constituer le dataset du hackathon:
+This branch keeps only two things:
 
-- normalisation d'un export SIRENE en `company_pool.csv`
-- generation de cas `train/validation/test`
-- rendu de documents `invoice`, `quote`, `attestation`, `rib`
-- export `raw / clean / curated`
-- scenarios coherents, falsifies et OCR-degrades
-- variations de styles visuels, palettes et decorations documentaires
-- import optionnel de "vraies" factures d'exemple via un manifest
+- the generated document corpus tracked in `generated/training_corpus/`
+- the Python code and config used to build that corpus again
 
 ## Structure
 
 ```text
 configs/
-examples/
+generated/training_corpus/
+inputs/
 scripts/
 src/hackathon_dataset/
-tests/
 ```
 
-## Prerequis
+## Prerequisites
 
 ```powershell
 py -3.14 -m pip install -r requirements.txt
 ```
 
-## 1. Preparer un pool d'entreprises depuis SIRENE
+## 1. Prepare the company registry
 
-Telecharge un CSV depuis la base SIRENE, puis:
+Download a SIRENE CSV export, then run:
 
 ```powershell
 py -3.14 scripts\dataset_cli.py prepare-companies `
@@ -37,73 +32,25 @@ py -3.14 scripts\dataset_cli.py prepare-companies `
   --limit 500
 ```
 
-Le script filtre les etablissements actifs, reconstruit un nom exploitable, calcule un numero de TVA FR a partir du SIREN, puis ecrit un CSV leger pour le generateur.
+This step filters active companies, rebuilds usable names, computes a French VAT number from the SIREN, and writes the lightweight registry consumed by the generator.
 
-Pour un test rapide sans SIRENE, tu peux partir de `examples/company_pool.sample.csv`.
-
-## Pourquoi `company_pool.csv` existe
-
-Ce fichier n'est pas le dataset final. C'est le referentiel d'entreprises utilise pour rendre le dataset credible.
-
-Le generateur s'en sert pour:
-
-- choisir un fournisseur et un client realistes
-- injecter de vrais formats de `SIRET`, `TVA`, adresses, villes
-- construire des cas coherents ou incoherents entre documents
-- eviter d'inventer des entreprises completement fictives a chaque execution
-
-En pratique:
-
-- tu telecharges ou exportes SIRENE
-- tu l'alleges avec `prepare-companies`
-- tu obtiens `company_pool.csv`
-- `build-dataset` lit ce fichier pour fabriquer les documents
-
-Si tu ne fais rien, le projet utilise simplement l'echantillon `examples/company_pool.sample.csv`.
-
-## 2. Ajouter des factures "reelles" d'exemple
-
-Depose tes PDF/images/XML officiels dans un dossier local, puis complete un manifest sur la base de `examples/real_examples/manifest.sample.csv`.
-
-Colonnes minimales:
-
-- `file_path`
-- `doc_type`
-- `supplier_name`
-- `supplier_siret`
-- `invoice_number`
-- `issue_date`
-- `amount_ttc`
-
-Colonnes utiles:
-
-- `supplier_vat`
-- `amount_ht`
-- `amount_tva`
-- `source_url`
-- `ocr_text_path`
-- `style_id`
-- `notes`
-
-Le generateur copie ces fichiers dans `raw/`, fabrique l'annotation `curated/` et ecrit un texte de reference dans `clean/`.
-
-## 3. Generer le dataset
+## 2. Build the corpus
 
 ```powershell
 py -3.14 scripts\dataset_cli.py build-dataset `
   --config configs\dataset_config.yaml `
-  --output generated\dataset
+  --output generated\training_corpus
 ```
 
-Sortie:
+Output layout:
 
 ```text
-generated/dataset/
-  raw/
+generated/training_corpus/
+  source_documents/
     train|validation|test/
-  clean/
+  reference_texts/
     train|validation|test/
-  curated/
+  annotations/
     documents.jsonl
     cases.jsonl
     documents.csv
@@ -111,7 +58,11 @@ generated/dataset/
     build_summary.json
 ```
 
-## Scenarios implementes
+- `source_documents/`: rendered PDFs, PNGs, and JPGs used as model inputs
+- `reference_texts/`: reference text written for each generated document
+- `annotations/`: labels and case-level metadata
+
+## Implemented scenarios
 
 - `legitimate_pdf`
 - `legitimate_scan`
@@ -124,20 +75,18 @@ generated/dataset/
 - `rib_mismatch`
 - `missing_field_scan`
 
-Chaque scenario produit un `case_id`, un ou plusieurs documents et un verdict attendu (`coherent`, `amount_mismatch`, `siret_mismatch`, `expired_attestation`, etc.).
+Each scenario generates one `case_id`, one or more documents, and an expected consistency outcome such as `coherent`, `amount_mismatch`, `siret_mismatch`, or `expired_attestation`.
 
-## Format des annotations
+## Annotation files
 
-`documents.jsonl` contient un objet par document:
+`annotations/documents.jsonl` contains one record per document with:
 
-- identifiants: `doc_id`, `case_id`, `split`
-- type/source: `doc_type`, `source_type`, `file_format`
-- labels metier: `supplier_*`, `customer_*`, `invoice_number`, `issue_date`, `due_date`, montants
-- flags: `is_forged`, `is_expired`, `has_cross_doc_inconsistency`
-- qualite: `quality_profile`
-- provenance: `source_url`, `notes`
+- identifiers: `doc_id`, `case_id`, `split`
+- file metadata: `doc_type`, `file_format`, `document_path`, `reference_text_path`
+- business labels: `supplier_*`, `customer_*`, `invoice_number`, dates, amounts
+- quality flags: `quality_profile`, `is_forged`, `is_expired`, `has_cross_doc_inconsistency`
 
-`cases.jsonl` contient un objet par cas:
+`annotations/cases.jsonl` contains one record per case with:
 
 - `case_id`
 - `scenario_id`
@@ -145,10 +94,3 @@ Chaque scenario produit un `case_id`, un ou plusieurs documents et un verdict at
 - `document_ids`
 - `expected_consistency_status`
 - `expected_issues`
-
-## Conseils d'usage pour le groupe
-
-- Utiliser `train` surtout en synthetique.
-- Garder des exemples "reels" dans `validation` et surtout `test`.
-- Ne pas melanger des factures privees non autorisees avec les exemples publics/officiels.
-- Versionner `configs/` et les manifests, pas le dataset genere si le volume devient important.

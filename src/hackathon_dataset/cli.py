@@ -10,7 +10,7 @@ from .config import load_config
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Hackathon dataset toolkit")
+    parser = argparse.ArgumentParser(description="Hackathon training corpus builder")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     prepare = subparsers.add_parser("prepare-companies", help="Normalise un export SIRENE")
@@ -18,7 +18,7 @@ def build_parser() -> argparse.ArgumentParser:
     prepare.add_argument("--output", required=True, type=Path, help="Chemin du company_pool de sortie")
     prepare.add_argument("--limit", type=int, default=500, help="Nombre max de lignes retenues")
 
-    build = subparsers.add_parser("build-dataset", help="Genere le dataset structure")
+    build = subparsers.add_parser("build-dataset", help="Genere le corpus documente")
     build.add_argument("--config", required=True, type=Path, help="Chemin du YAML de configuration")
     build.add_argument("--output", required=True, type=Path, help="Dossier de sortie")
 

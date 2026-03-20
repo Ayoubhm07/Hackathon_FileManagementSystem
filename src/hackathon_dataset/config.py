@@ -17,8 +17,7 @@ def load_config(config_path: Path) -> BuildConfig:
 
     return BuildConfig(
         seed=int(raw.get("seed", 20260317)),
-        company_pool_csv=(config_path.parent.parent / defaults.get("company_pool_csv", "examples/company_pool.sample.csv")).resolve(),
-        real_examples_manifest=(config_path.parent.parent / defaults.get("real_examples_manifest", "examples/real_examples/manifest.sample.csv")).resolve(),
+        company_pool_csv=(config_path.parent.parent / defaults.get("company_pool_csv", "inputs/company_pool.csv")).resolve(),
         image_width=int(output.get("image_width", 1654)),
         image_height=int(output.get("image_height", 2339)),
         jpeg_quality=int(output.get("jpeg_quality", 55)),

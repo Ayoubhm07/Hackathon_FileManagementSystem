@@ -341,7 +341,5 @@ def create_case_blueprint(
 
     return {
         "scenario": scenario,
-        "supplier": supplier,
-        "customer": customer,
         "documents": document_payloads,
     }

@@ -1,1 +1,1 @@
-"""Dataset toolkit for the hackathon project."""
+"""Dataset corpus builder for the hackathon project."""

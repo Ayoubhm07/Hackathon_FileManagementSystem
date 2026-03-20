@@ -4,7 +4,6 @@ defaults:
   payment_terms_days: 30
   tax_rate: 0.20
   company_pool_csv: inputs/company_pool.csv
-  real_examples_manifest: examples/real_examples/manifest.sample.csv
 output:
   image_width: 1654
   image_height: 2339

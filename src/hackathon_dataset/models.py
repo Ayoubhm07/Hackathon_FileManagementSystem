@@ -47,10 +47,9 @@ class DocumentRecord:
     scenario_id: str
     split: str
     doc_type: str
-    source_type: str
     file_format: str
-    relative_path: str
-    clean_text_path: str
+    document_path: str
+    reference_text_path: str
     quality_profile: str
     style_id: str
     supplier_name: str
@@ -73,7 +72,6 @@ class DocumentRecord:
     is_forged: bool
     is_expired: bool
     has_cross_doc_inconsistency: bool
-    source_url: str = ""
     notes: str = ""
 
     def to_dict(self) -> dict[str, object]:
@@ -153,7 +151,6 @@ class DocumentContent:
 class BuildConfig:
     seed: int
     company_pool_csv: Path
-    real_examples_manifest: Path
     image_width: int
     image_height: int
     jpeg_quality: int
